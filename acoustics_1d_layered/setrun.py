@@ -35,7 +35,14 @@ def setrun(claw_pkg='classic'):
     #------------------------------------------------------------------
     # Problem-specific parameters to be written to setprob.data:
     #------------------------------------------------------------------
-    #probdata = rundata.new_UserData(name='probdata', fname='setprob.data')
+    probdata = rundata.new_UserData(name='probdata', fname='setprob.data')
+    probdata.add_param('t1',  15.0, 't1')
+    probdata.add_param('a1',   0.2, 'a1')
+    probdata.add_param('tw1', 10.0, 'tw1')
+    probdata.add_param('t2',  11.5, 't2')
+    probdata.add_param('a2',   0.0, 'a2')
+    probdata.add_param('tw2', 10.0, 'tw2')
+    probdata.add_param('mylim', 1, 'use transmissive limiter')
 
     
     #------------------------------------------------------------------

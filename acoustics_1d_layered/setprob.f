@@ -1,7 +1,7 @@
       subroutine setprob
       implicit double precision (a-h,o-z)
       common /comaux/ rho(1000)
-      common /comlim/ mylim,mrplim(2)
+      common /comlim/ mylim
       common /combc/ omega
       common /comwall/ pi,t1,a1,tw1,t2,a2,tw2
 
@@ -13,17 +13,23 @@ c
 
       pi = 4.d0*datan(1.d0)
 
-c     # parameters for wall
-      read(7,*) t1,a1,tw1
-      read(7,*) t2,a2,tw2
+c     Skip first 5 lines
+      read(7,*)
+      read(7,*)
+      read(7,*)
+      read(7,*)
+      read(7,*)
 
-c     # if mylim>0 then limiter is applied in rp1 rather than using
-c     # default clawpack limiter.   
-c     # mrplim(p) tells which limiter to use for the p'th wave.
-c     # if mylim>0 then you should set mthlim(p)=0 in claw1ez.data!
-c
+c     # parameters for wall
+      read(7,*) t1
+      read(7,*) a1
+      read(7,*) tw1
+      read(7,*) t2
+      read(7,*) a2
+      read(7,*) tw2
+
+c     # if mylim=1 then transmissve limiter is applied in rp1 rather than using
       read(7,*) mylim
-      read(7,*) mrplim(1), mrplim(2)
 
 c     # Piecewise constant medium with interfaces at x = 1, 2, ...
 c     # Random densities can be created in matlab, e.g.:

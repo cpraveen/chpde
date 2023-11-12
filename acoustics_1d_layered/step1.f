@@ -46,13 +46,12 @@ c
       logical use_fwave
       logical limit
       external rp1
-      common /comlim/ mylim,mrplim(2)
+      common /comlim/ mylim
 c
 c     # check if any limiters are used:
       limit = .false.
       do mw=1,mwaves
-         if (mylim.eq.0 .and. mthlim(mw) .gt. 0) limit = .true.
-         if (mylim.eq.1 .and. mrplim(mw) .gt. 0) limit = .true.
+         if (mthlim(mw) .gt. 0) limit = .true.
       enddo
 c
       mcapa = method(6)
@@ -113,7 +112,7 @@ c     # apply limiter to waves:
       if (limit) then
         if (mylim .eq. 1) then
 c          # transmission-based limiter:
-           call trlimit(meqn,mwaves,maux,mbc,mx,aux,wave,s,mrplim)
+           call trlimit(meqn,mwaves,maux,mbc,mx,aux,wave,s,mthlim)
          else
 c          # original:
            call limiter(mx,meqn,mwaves,mbc,mx,wave,s,mthlim)
