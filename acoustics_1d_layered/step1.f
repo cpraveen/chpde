@@ -62,7 +62,7 @@ c
 		write(6,*) 'Error -- capa must be positive'
 		stop
            endif
-             dtdx(i) = dt / (dx*aux(i,mcapa))
+             dtdx(i) = dt / (dx*aux(mcapa,i))
 	    else
              dtdx(i) = dt/dx
         endif
