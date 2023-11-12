@@ -23,7 +23,7 @@ from numpy import sqrt, exp, cos, abs
 from clawpack import riemann
 
 
-def setup(use_petsc=False, solver_type='classic',
+def setup(ic=0, medium=0, use_petsc=False, solver_type='classic',
           outdir='./_output', ptwise=False, weno_order=5,
           time_integrator='SSP104', disable_output=False, output_style=1):
 
@@ -64,13 +64,25 @@ def setup(use_petsc=False, solver_type='classic',
     solver.aux_bc_upper[0] = pyclaw.BC.extrap
 
     xc = domain.grid.x.centers
-    state.q[0, :] = (xc > -4.0) * (xc < -2.0) * sqrt(abs(1.0 - (xc+3.0)**2))
-    state.q[1, :] = state.q[0,:]
+    if ic == 0:
+        state.q[0, :] = (xc > -4.0)*(xc < -2.0)*sqrt(abs(1.0 - (xc+3.0)**2))
+        state.q[1, :] = state.q[0,:]
+    else:
+        state.q[0, :] = (xc < -2.0)*1.0 + (xc > -2.0)*0.0
+        state.q[1, :] = state.q[0,:]
 
-    rhol, rhor = 1.0, 2.0
-    Kl, Kr = 1.0, 0.5
+    if medium == 0:
+        rhol, rhor = 1.0, 2.0
+        Kl,   Kr   = 1.0, 0.5
+    else:
+        rhol, rhor = 1.0, 4.0
+        Kl,   Kr   = 1.0, 1.0
+
     Zl, Zr = sqrt(rhol * Kl), sqrt(rhor * Kr)
     cl, cr = sqrt(Kl/rhol), sqrt(Kr/rhor)
+    print("Zl, Zr = ", Zl, Zr)
+    print("cl, cr = ", cl, cr)
+
     state.aux[0,:] = (xc < 0.0) * Zl + (xc > 0.0) * Zr
     state.aux[1,:] = (xc < 0.0) * cl   + (xc > 0.0) * cr
 
