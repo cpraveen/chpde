@@ -25,6 +25,7 @@ c
       dimension    s(mwaves,1-mbc:mx+mbc)
       dimension wave(meqn,mwaves,1-mbc:mx+mbc)
       dimension mthlim(mwaves)
+		external philim
 c
 c
 c     # transmission-based limiter:

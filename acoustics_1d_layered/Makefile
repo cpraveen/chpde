@@ -57,7 +57,7 @@ SOURCES = \
   trlimit.f \
   step1.f \
   setaux.f \
-  philim.f
+  $(CLAW)/classic/src/1d/philim.f90
 
 #-------------------------------------------------------------------
 # Include Makefile containing standard definitions and make options:

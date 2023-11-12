@@ -179,7 +179,7 @@ def setrun(claw_pkg='classic'):
     #   2 or 'superbee' ==> superbee
     #   3 or 'vanleer'  ==> van Leer
     #   4 or 'mc'       ==> MC limiter
-    clawdata.limiter = clawdata.num_waves * ['minmod']
+    clawdata.limiter = clawdata.num_waves * ['mc']
     
     clawdata.use_fwaves = False    # True ==> use f-wave version of algorithms
     
