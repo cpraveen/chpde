@@ -42,6 +42,8 @@ def setrun(claw_pkg='classic'):
     probdata.add_param('t2',  11.5, 't2')
     probdata.add_param('a2',   0.0, 'a2')
     probdata.add_param('tw2', 10.0, 'tw2')
+    # mylim=0: standard wave limiter
+    # mylim=1: transmissive limiter
     probdata.add_param('mylim', 1, 'use transmissive limiter')
 
     
