@@ -14,6 +14,7 @@ c
 
       r = b/a
 
+      go to(10,20,30,40,50) meth
 c
    10 continue
 c     --------
