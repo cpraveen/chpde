@@ -17,6 +17,14 @@ c     # parameters for wall
       read(7,*) t1,a1,tw1
       read(7,*) t2,a2,tw2
 
+c     # if mylim>0 then limiter is applied in rp1 rather than using
+c     # default clawpack limiter.   
+c     # mrplim(p) tells which limiter to use for the p'th wave.
+c     # if mylim>0 then you should set mthlim(p)=0 in claw1ez.data!
+c
+      read(7,*) mylim
+      read(7,*) mrplim(1), mrplim(2)
+
 c     # Piecewise constant medium with interfaces at x = 1, 2, ...
 c     # Random densities can be created in matlab, e.g.:
 c     #       rho = rand(1000,1) + 1;
@@ -28,15 +36,7 @@ c     #       rho = mod(1:1000,2)*2 + 1;
 
       do i=1,1000
          read(8,*) rho(i)
-         enddo
+      enddo
 c
-c     # if mylim>0 then limiter is applied in rp1 rather than using
-c     # default clawpack limiter.   
-c     # mrplim(p) tells which limiter to use for the p'th wave.
-c     # if mylim>0 then you should set mthlim(p)=0 in claw1ez.data!
-c
-      read(7,*) mylim
-      read(7,*) mrplim(1), mrplim(2)
-
       return
       end
