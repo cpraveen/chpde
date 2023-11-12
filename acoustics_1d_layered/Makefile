@@ -1,44 +1,53 @@
-#
-#               Makefile for the lib code:
-#
-#       To make an executable, type:            make xclaw
-#       (from the application sub-directory)
-#
-#       To compile a single file.f type:          make file.o
-#       (from the application sub-directory)
-#
-#       To compile the lib library files type:    make claw1
-#       (from the claw/clawpack/1d/lib sub-directory)
-#
-#       To combine all source files type:         make program
-#       (from the application sub-directory)
-#       (sometimes easier to debug all in one)
 
-#
-#
-FFLAGS =  -O
-LFLAGS =  -O
-LINK	= f77
-# .f.o: ; $(LINK) $(FFLAGS) $*.f
-OBJECTS = \
-  driver.o \
-  qinit.o \
-  rp1acv.o \
-  setaux.o \
-  bc1.o \
-  philim.o \
-  trlimit.o \
-  step1.o \
-  setprob.o 
+# Makefile for Clawpack code in this directory.
+# This version only sets the local files and frequently changed
+# options, and then includes the standard makefile pointed to by CLAWMAKE.
+CLAWMAKE = $(CLAW)/clawutil/src/Makefile.common
 
-LIBOBJECTS = \
-  $(CLAW)/clawpack/1d/lib/claw1ez.o \
-  $(CLAW)/clawpack/1d/lib/out1.o \
-  $(CLAW)/clawpack/1d/lib/claw1.o \
-  $(CLAW)/clawpack/1d/lib/b4step1.o \
-  $(CLAW)/clawpack/1d/lib/copyq1.o \
-  $(CLAW)/clawpack/1d/lib/limiter.o \
-  $(CLAW)/clawpack/1d/lib/src1.o 
+# See the above file for details and a list of make options, or type
+#   make .help
+# at the unix prompt.
+
+
+# Adjust these variables if desired:
+# ----------------------------------
+
+CLAW_PKG = classic                  # Clawpack package to use
+EXE = xclaw                         # Executable to create
+SETRUN_FILE = setrun.py             # File containing function to make data
+OUTDIR = _output                    # Directory for output
+SETPLOT_FILE = setplot.py           # File containing function to set plots
+PLOTDIR = _plots                    # Directory for plots
+
+OVERWRITE ?= True                   # False ==> make a copy of OUTDIR first
+RESTART ?= False                    # Should = clawdata.restart in setrun
+
+# Environment variable FC should be set to fortran compiler, e.g. gfortran
+
+# Compiler flags can be specified here or set as an environment variable
+FFLAGS ?= -Wall 
+
+# ---------------------------------
+# package sources for this program:
+# ---------------------------------
+
+include $(CLAW)/classic/src/1d/Makefile.classic_1d
+
+# ---------------------------------------
+# package sources specifically to exclude
+# (i.e. if a custom replacement source 
+#  under a different name is provided)
+# ---------------------------------------
+
+EXCLUDE_MODULES = \
+
+EXCLUDE_SOURCES = \
+
+# ----------------------------------------
+# List of custom sources for this program:
+# ----------------------------------------
+
+MODULES = \
 
 SOURCES = \
   driver.f \
@@ -49,19 +58,8 @@ SOURCES = \
   trlimit.f \
   step1.f \
   setaux.f \
-  $(CLAW)/clawpack/1d/lib/claw1ez.f \
-  $(CLAW)/clawpack/1d/lib/out1.f \
-  $(CLAW)/clawpack/1d/lib/claw1.f \
-  $(CLAW)/clawpack/1d/lib/b4step1.f \
-  $(CLAW)/clawpack/1d/lib/copyq1.f \
-  $(CLAW)/clawpack/1d/lib/limiter.f \
-  philim.f \
-  $(CLAW)/clawpack/1d/lib/src1.f 
+  philim.f
 
-xclaw: $(OBJECTS)
-	$(LINK) $(LFLAGS) $(OBJECTS) $(LIBOBJECTS) -o xclaw
-
-program : $(SOURCES)
-	cat $(SOURCES) > claw1program.f
-
-### DO NOT remove this line - make depends on it ###
+#-------------------------------------------------------------------
+# Include Makefile containing standard definitions and make options:
+include $(CLAWMAKE)

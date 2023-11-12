@@ -17,26 +17,25 @@ c
       common /comaux/ rho(1000)
 
       open(unit=31,file='fort.aux',status='unknown',form='formatted')
-c
 
-       do i=1-mbc,mx+mbc
-          xcell = xlower + (i-0.5d0)*dx
-c         # truncate to an integer to determine which layer xcell is in:
-	  ix = xcell + 1
-	  if (ix.lt.1) ix = 1
-	  aux(i,2) = 1.d0
- 	  aux(i,1) = rho(ix)*aux(i,2)
-c         # uniform for comparison:
-c	  aux(i,1) = aux(i,2)
-	  enddo
+      do i=1-mbc,mx+mbc
+         xcell = xlower + (i-0.5d0)*dx
+c        # truncate to an integer to determine which layer xcell is in:
+         ix = xcell + 1
+         if (ix.lt.1) ix = 1
+         aux(i,2) = 1.d0
+         aux(i,1) = rho(ix)*aux(i,2)
+c        # uniform for comparison:
+c	   aux(i,1) = aux(i,2)
+      enddo
 
 
-	do i=1,mx
+      do i=1,mx
           write(31,701) aux(i,1), aux(i,2)
-  701     format(2e16.6)
-          enddo
+701       format(2e16.6)
+      enddo
 
-       close(unit=31)
+      close(unit=31)
 c
-       return
-       end
+      return
+      end

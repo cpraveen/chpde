@@ -1,5 +1,3 @@
-c
-c
 c     =====================================================
       double precision function philim(a,b,meth)
 c     =====================================================
@@ -11,8 +9,8 @@ c     # a is assumed to be nonzero.
 c
       if (a .eq. 0.d0) then
          philim = 0.d0
-	 return
-	 endif
+         return
+      endif
 
       r = b/a
 

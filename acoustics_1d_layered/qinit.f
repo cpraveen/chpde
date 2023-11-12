@@ -1,5 +1,3 @@
-c
-c
 c =========================================================
        subroutine qinit(maxmx,meqn,mbc,mx,xlower,dx,q,maux,aux)
 c =========================================================
@@ -13,11 +11,11 @@ c
 c
 c
       do 150 i=1,mx
-	 xcell = xlower + (i-0.5d0)*dx
+         xcell = xlower + (i-0.5d0)*dx
 c        q(i,1) = g0((xcell-50.d0)/5.d0)
          q(i,1) = 0.d0
          q(i,2) = 0.d0
-  150    continue
+150   continue
 c
       return
       end
