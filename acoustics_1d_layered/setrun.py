@@ -210,8 +210,8 @@ def setrun(claw_pkg='classic'):
     #   2 or 'periodic' => periodic (must specify this at both boundaries)
     #   3 or 'wall'     => solid wall for systems where q(2) is normal velocity
     
-    clawdata.bc_lower[0] = 'user'   # at xlower
-    clawdata.bc_upper[0] = 'user'   # at xupper
+    clawdata.bc_lower[0] = 'user'     # at xlower
+    clawdata.bc_upper[0] = 'extrap'   # at xupper
     
     
     # --------------
