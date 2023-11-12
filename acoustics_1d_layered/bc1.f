@@ -2,7 +2,7 @@
 c
 c
 c     =================================================================
-      subroutine bc1(maxmx,meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt,mthbc)
+      subroutine bc1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt,mthbc)
 c     =================================================================
 c
 c     # Standard boundary condition choices for claw2
@@ -28,8 +28,8 @@ c     # to the virtual cells outside the region, with
 c     #      i = 1-ibc  and   i = mx+ibc   for ibc=1,...,mbc
 c
       implicit double precision (a-h,o-z)
-      dimension q(1-mbc:maxmx+mbc, meqn)
-      dimension aux(1-mbc:maxmx+mbc, *)
+      dimension q(meqn,1-mbc:mx+mbc)
+      dimension aux(maux,1-mbc:mx+mbc)
 
       dimension mthbc(2)
       common /comwall/ pi,t1,a1,tw1,t2,a2,tw2
@@ -41,7 +41,7 @@ c     # switch to periodic boundary conditions once pulse is generated:
          mthbc(2) = 2
 	 do m=1,meqn
 	    do ibc=1,mbc
-	       aux(1-ibc,m) = aux(mx+1-ibc,m)
+	       aux(m,1-ibc) = aux(m,mx+1-ibc)
 	       enddo
 	    enddo
 	 endif
@@ -57,13 +57,13 @@ c     # user-specified boundary conditions
 c     # oscillating wall 
       do 105 m=1,meqn
          do 105 ibc=1,mbc
-               q(1-ibc,m) = q(ibc,m)
+               q(m,1-ibc) = q(m,ibc)
   105       continue
 c     # wall velocity:
       vwall = a1*g0((t-t1)/tw1)
 c     # adjust the normal velocity:
       do 106 ibc=1,mbc
-            q(1-ibc,2) = 2.0d0*vwall - q(ibc,2)
+            q(2,1-ibc) = 2.0d0*vwall - q(2,ibc)
   106    continue
       go to 199
 c
@@ -71,7 +71,7 @@ c
 c     # zero-order extrapolation:
       do 115 m=1,meqn
          do 115 ibc=1,mbc
-               q(1-ibc,m) = q(1,m)
+               q(m,1-ibc) = q(m,1)
   115       continue
       go to 199
 
@@ -79,7 +79,7 @@ c     # zero-order extrapolation:
 c     # periodic:  
       do 125 m=1,meqn
          do 125 ibc=1,mbc
-               q(1-ibc,m) = q(mx+1-ibc,m)
+               q(m,1-ibc) = q(m,mx+1-ibc)
   125       continue
       go to 199
 
@@ -87,11 +87,11 @@ c     # periodic:
 c     # solid wall (assumes 2'nd component is velocity or momentum in x):
       do 135 m=1,meqn
          do 135 ibc=1,mbc
-               q(1-ibc,m) = q(ibc,m)
+               q(m,1-ibc) = q(m,ibc)
   135       continue
 c     # negate the normal velocity:
       do 136 ibc=1,mbc
-            q(1-ibc,2) = -q(ibc,2)
+            q(2,1-ibc) = -q(2,ibc)
   136    continue
       go to 199
 
@@ -108,13 +108,13 @@ c     # user-specified boundary conditions
 c     # oscillating wall 
       do 205 m=1,meqn
          do 205 ibc=1,mbc
-	       q(mx+ibc,m) = q(mx+1-ibc,m)
+	       q(m,mx+ibc) = q(m,mx+1-ibc)
   205       continue
 c     # wall velocity:
       vwall = a2*g0((t-t2)/tw2)
 c     # adjust the normal velocity:
       do 206 ibc=1,mbc
-         q(mx+ibc,2) = 2.0d0*vwall - q(mx+1-ibc,2)
+         q(2,mx+ibc) = 2.0d0*vwall - q(2,mx+1-ibc)
   206    continue
       go to 299
 
@@ -122,7 +122,7 @@ c     # adjust the normal velocity:
 c     # zero-order extrapolation:
       do 215 m=1,meqn
          do 215 ibc=1,mbc
-               q(mx+ibc,m) = q(mx,m)
+               q(m,mx+ibc) = q(m,mx)
   215       continue
       go to 299
 
@@ -130,7 +130,7 @@ c     # zero-order extrapolation:
 c     # periodic:  
       do 225 m=1,meqn
          do 225 ibc=1,mbc
-               q(mx+ibc,m) = q(ibc,m)
+               q(m,mx+ibc) = q(m,ibc)
   225       continue
       go to 299
 
@@ -138,10 +138,10 @@ c     # periodic:
 c     # solid wall (assumes 2'nd component is velocity or momentum in x):
       do 235 m=1,meqn
          do 235 ibc=1,mbc
-               q(mx+ibc,m) = q(mx+1-ibc,m)
+               q(m,mx+ibc) = q(m,mx+1-ibc)
   235       continue
       do 236 ibc=1,mbc
-            q(mx+ibc,2) = -q(mx+1-ibc,2)
+            q(2,mx+ibc) = -q(2,mx+1-ibc)
   236    continue
       go to 299
 
@@ -166,4 +166,3 @@ c     ===============================
 
       return
       end
-

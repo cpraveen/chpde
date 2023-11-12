@@ -1,8 +1,8 @@
 c
 c
 c ===================================================================
-      subroutine step1(maxmx,meqn,mwaves,mbc,mx,q,aux,dx,dt,
-     &              method,mthlim,cfl,f,wave,s,amdq,apdq,dtdx,rp1)
+      subroutine step1(meqn,mwaves,mbc,maux,mx,q,aux,dx,dt,method,
+     &                 mthlim,cfl,f,wave,s,amdq,apdq,dtdx,use_fwave,rp1)
 c ===================================================================
 c
 c     # Take one time step, updating q.
@@ -14,115 +14,119 @@ c
 c
 c     amdq, apdq, wave, s, and f are used locally:
 c
-c     amdq(1-mbc:maxmx+mbc, meqn) = left-going flux-differences
-c     apdq(1-mbc:maxmx+mbc, meqn) = right-going flux-differences
+c     amdq(1-mbc:mx+mbc, meqn) = left-going flux-differences
+c     apdq(1-mbc:mx+mbc, meqn) = right-going flux-differences
 c        e.g. amdq(i,m) = m'th component of A^- \Delta q from i'th Riemann
 c                         problem (between cells i-1 and i).
 c
-c     wave(1-mbc:maxmx+mbc, meqn, mwaves) = waves from solution of
+c     wave(1-mbc:mx+mbc, meqn, mwaves) = waves from solution of
 c                                           Riemann problems,
 c            wave(i,m,mw) = mth component of jump in q across
 c                           wave in family mw in Riemann problem between
 c                           states i-1 and i.
 c
-c     s(1-mbc:maxmx+mbc, mwaves) = wave speeds,
+c     s(1-mbc:mx+mbc, mwaves) = wave speeds,
 c            s(i,mw) = speed of wave in family mw in Riemann problem between
 c                      states i-1 and i.
 c
-c     f(1-mbc:maxmx+mbc, meqn) = correction fluxes for second order method
+c     f(1-mbc:mx+mbc, meqn) = correction fluxes for second order method
 c            f(i,m) = mth component of flux at left edge of ith cell 
 c     --------------------------------------------------------------------
 c
       implicit double precision (a-h,o-z)
-      dimension    q(1-mbc:maxmx+mbc, meqn)
-      dimension  aux(1-mbc:maxmx+mbc, *)
-      dimension    f(1-mbc:maxmx+mbc, meqn)
-      dimension    s(1-mbc:maxmx+mbc, mwaves)
-      dimension wave(1-mbc:maxmx+mbc, meqn, mwaves)
-      dimension amdq(1-mbc:maxmx+mbc, meqn)
-      dimension apdq(1-mbc:maxmx+mbc, meqn)
-      dimension dtdx(1-mbc:maxmx+mbc)
+      dimension    q(meqn,1-mbc:mx+mbc)
+      dimension  aux(maux,1-mbc:mx+mbc)
+      dimension    f(meqn,1-mbc:mx+mbc)
+      dimension    s(mwaves,1-mbc:mx+mbc)
+      dimension wave(meqn,mwaves,1-mbc:mx+mbc)
+      dimension amdq(meqn,1-mbc:mx+mbc)
+      dimension apdq(meqn,1-mbc:mx+mbc)
+      dimension dtdx(1-mbc:mx+mbc)
       dimension method(7),mthlim(mwaves)
+      logical use_fwave
       logical limit
+      external rp1
       common /comlim/ mylim,mrplim(2)
 c
 c     # check if any limiters are used:
       limit = .false.
-      do 5 mw=1,mwaves
-	 if (mylim.eq.0 .and. mthlim(mw) .gt. 0) limit = .true.
-	 if (mylim.eq.1 .and. mrplim(mw) .gt. 0) limit = .true.
-   5     continue
+      do mw=1,mwaves
+         if (mylim.eq.0 .and. mthlim(mw) .gt. 0) limit = .true.
+         if (mylim.eq.1 .and. mrplim(mw) .gt. 0) limit = .true.
+      enddo
 c
       mcapa = method(6)
-      do 10 i=1-mbc,mx+mbc
-	 if (mcapa.gt.0) then
-	     if (aux(i,mcapa) .le. 0.d0) then
+      do i=1-mbc,mx+mbc
+         if (mcapa.gt.0) then
+           if (aux(i,mcapa) .le. 0.d0) then
 		write(6,*) 'Error -- capa must be positive'
 		stop
-		endif
+           endif
              dtdx(i) = dt / (dx*aux(i,mcapa))
 	    else
              dtdx(i) = dt/dx
-	    endif
-   10	 continue
+        endif
+      enddo
 c
 c
 c
 c     # solve Riemann problem at each interface 
 c     -----------------------------------------
 c
-      call rp1(maxmx,meqn,mwaves,mbc,mx,q,q,aux,aux,wave,s,amdq,apdq)
+      call rp1(mx,meqn,mwaves,maux,mbc,mx,q,q,aux,aux,wave,s,amdq,apdq)
 c
 c     # Modify q for Godunov update:
 c     # Note this may not correspond to a conservative flux-differencing
 c     # for equations not in conservation form.  It is conservative if
 c     # amdq + apdq = f(q(i)) - f(q(i-1)).
 c
-      do 40 i=1,mx+1
-         do 40 m=1,meqn
-            q(i,m) = q(i,m) - dtdx(i)*apdq(i,m)
-            q(i-1,m) = q(i-1,m) - dtdx(i-1)*amdq(i,m)
-   40       continue
+      do i=1,mx+1
+         do m=1,meqn
+            q(m,i) = q(m,i) - dtdx(i)*apdq(m,i)
+            q(m,i-1) = q(m,i-1) - dtdx(i-1)*amdq(m,i)
+         enddo
+      enddo
 
 c
 c     # compute maximum wave speed:
       cfl = 0.d0
-      do 50 mw=1,mwaves
-	 do 45 i=1,mx+1
+      do mw=1,mwaves
+	 do i=1,mx+1
 c          # if s>0 use dtdx(i) to compute CFL,
 c          # if s<0 use dtdx(i-1) to compute CFL:
-	   cfl = dmax1(cfl, dtdx(i)*s(i,mw), -dtdx(i-1)*s(i,mw))
-   45      continue
-   50    continue
+	   cfl = dmax1(cfl, dtdx(i)*s(mw,i), -dtdx(i-1)*s(mw,i))
+       enddo
+      enddo
 c
       if (method(2) .eq. 1) go to 900
 c
 c     # compute correction fluxes for second order q_{xx} terms:
 c     ----------------------------------------------------------
 c
-      do 100 m = 1, meqn
-            do 100 i = 1-mbc, mx+mbc
-               f(i,m) = 0.d0
-  100          continue
+      do m = 1, meqn
+            do i = 1-mbc, mx+mbc
+               f(m,i) = 0.d0
+            enddo
+      enddo
 c
 c     # apply limiter to waves:
       if (limit) then
         if (mylim .eq. 1) then
 c          # transmission-based limiter:
-           call trlimit(maxmx,meqn,mwaves,mbc,mx,aux,wave,s,mrplim)
+           call trlimit(meqn,mwaves,maux,mbc,mx,aux,wave,s,mrplim)
          else
 c          # original:
-           call limiter(maxmx,meqn,mwaves,mbc,mx,wave,s,mthlim)
+           call limiter(mx,meqn,mwaves,mbc,mx,wave,s,mthlim)
          endif
         endif
 
 c
       do 120 i=1,mx+1
-	 do 120 m=1,meqn
+        do 120 m=1,meqn
 	    do 110 mw=1,mwaves
 	       dtdxave = 0.5d0 * (dtdx(i-1) + dtdx(i))
-	       f(i,m) = f(i,m) + 0.5d0 * dabs(s(i,mw))
-     &		   * (1.d0 - dabs(s(i,mw))*dtdxave) * wave(i,m,mw)
+	       f(m,i) = f(m,i) + 0.5d0 * dabs(s(mw,i))
+     &                * (1.d0 - dabs(s(mw,i))*dtdxave) * wave(m,mw,i)
 c
 c              # third order corrections:
 c              # (still experimental... works well for smooth solutions
@@ -131,12 +135,12 @@ c
 
                if (method(2).lt.3) go to 110
                if (s(i,mw) .gt. 0.d0) then
-                   dq2 = wave(i,m,mw) - wave(i-1,m,mw)
+                   dq2 = wave(m,mw,i) - wave(m,mw,i-1)
                  else
-                   dq2 = wave(i+1,m,mw) - wave(i,m,mw)
+                   dq2 = wave(m,mw,i+1) - wave(m,mw,i)
                  endif
-               f(i,m) = f(i,m) - s(i,mw)/6.d0 *
-     &                     (1.d0 - (s(i,mw)*dtdxave)**2) * dq2
+               f(m,i) = f(m,i) - s(mw,i)/6.d0 *
+     &                     (1.d0 - (s(mw,i)*dtdxave)**2) * dq2
 
   110          continue
   120       continue
@@ -149,10 +153,11 @@ c     ============================================
 c
 c     # (Note:  Godunov update has already been performed above)
 c
-      do 150 m=1,meqn
-	 do 150 i=1,mx
-	    q(i,m) = q(i,m) - dtdx(i) * (f(i+1,m) - f(i,m))
-  150       continue
+      do m=1,meqn
+	 do i=1,mx
+	    q(m,i) = q(m,i) - dtdx(i) * (f(m,i+1) - f(m,i))
+       enddo
+      enddo
 c
   900 continue
       return

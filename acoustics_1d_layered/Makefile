@@ -50,7 +50,6 @@ EXCLUDE_SOURCES = \
 MODULES = \
 
 SOURCES = \
-  driver.f \
   qinit.f \
   rp1acv.f \
   setprob.f \

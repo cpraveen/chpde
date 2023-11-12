@@ -2,7 +2,7 @@
 c
 c
 c     =====================================================
-      subroutine rp1(maxm,meqn,mwaves,mbc,mx,ql,qr,auxl,auxr,
+      subroutine rp1(maxm,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,
      &			wave,s,amdq,apdq)
 c     =====================================================
 c
@@ -32,55 +32,55 @@ c
 c
       implicit double precision (a-h,o-z)
 c
-      dimension auxl(1-mbc:maxm+mbc, 2)
-      dimension auxr(1-mbc:maxm+mbc, 2)
-      dimension wave(1-mbc:maxm+mbc, meqn, mwaves)
-      dimension    s(1-mbc:maxm+mbc, mwaves)
-      dimension   ql(1-mbc:maxm+mbc, meqn)
-      dimension   qr(1-mbc:maxm+mbc, meqn)
-      dimension apdq(1-mbc:maxm+mbc, meqn)
-      dimension amdq(1-mbc:maxm+mbc, meqn)
+      dimension auxl(2,1-mbc:maxm+mbc)
+      dimension auxr(2,1-mbc:maxm+mbc)
+      dimension wave(meqn,mwaves,1-mbc:maxm+mbc)
+      dimension    s(mwaves,1-mbc:maxm+mbc)
+      dimension   ql(meqn,1-mbc:maxm+mbc)
+      dimension   qr(meqn,1-mbc:maxm+mbc)
+      dimension apdq(meqn,1-mbc:maxm+mbc)
+      dimension amdq(meqn,1-mbc:maxm+mbc)
 c
 c     local arrays
 c     ------------
       dimension delta(2)
 c
-c
 c     # split the jump in q at each interface into waves
 c
 c     # find a1 and a2, the coefficients of the 2 eigenvectors:
-      do 20 i = 2-mbc, mx+mbc
-         delta(1) = ql(i,1) - qr(i-1,1)
-         delta(2) = ql(i,2) - qr(i-1,2)
+      do i = 2-mbc, mx+mbc
+         delta(1) = ql(1,i) - qr(1,i-1)
+         delta(2) = ql(2,i) - qr(2,i-1)
 
 c        # impedances:
-	 zi = auxl(i,1)
-	 zim = auxl(i-1,1)
+	  zi = auxl(1,i)
+	  zim = auxl(1,i-1)
 
-	 a1 = (-delta(1) + zi*delta(2)) / (zim + zi)
-	 a2 =  (delta(1) + zim*delta(2)) / (zim + zi)
+	  a1 = (-delta(1) + zi*delta(2)) / (zim + zi)
+	  a2 =  (delta(1) + zim*delta(2)) / (zim + zi)
 c
 c        # Compute the waves.
 c
-         wave(i,1,1) = -a1*zim
-         wave(i,2,1) = a1
-         s(i,1) = -auxl(i-1,2)
+         wave(1,1,i) = -a1*zim
+         wave(2,1,i) = a1
+         s(1,i) = -auxl(2,i-1)
 c
-         wave(i,1,2) = a2*zi
-         wave(i,2,2) = a2
-         s(i,2) = auxl(i,2)
+         wave(1,2,i) = a2*zi
+         wave(2,2,i) = a2
+         s(2,i) = auxl(2,i)
+      enddo
 c
-   20    continue
 c
 c
 c     # compute the leftgoing and rightgoing fluctuations:
 c     # Note s(i,1) < 0   and   s(i,2) > 0.
 c
-      do 220 m=1,meqn
-         do 220 i = 2-mbc, mx+mbc
-            amdq(i,m) = s(i,1)*wave(i,m,1)
-            apdq(i,m) = s(i,2)*wave(i,m,2)
-  220       continue
+      do m=1,meqn
+         do i = 2-mbc, mx+mbc
+            amdq(m,i) = s(1,i)*wave(m,1,i)
+            apdq(m,i) = s(2,i)*wave(m,2,i)
+         enddo
+      enddo
 c
       return
       end

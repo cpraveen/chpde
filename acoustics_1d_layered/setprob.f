@@ -9,7 +9,7 @@ c
 c     # Set the material parameters for the acoustic equations
 c
       open(unit=7,file='setprob.data',status='old',form='formatted')
-      open(unit=8,file='setprob.rho',status='old',form='formatted')
+      open(unit=8,file='../setprob.rho',status='old',form='formatted')
 
       pi = 4.d0*datan(1.d0)
 
