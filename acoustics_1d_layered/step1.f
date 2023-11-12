@@ -1,6 +1,7 @@
 ! ===================================================================
       subroutine step1 (meqn, mwaves, mbc, maux, mx, q, aux, dx, dt,
-     &method, mthlim, cfl, f, wave, s, amdq, apdq, dtdx, use_fwave, rp1)
+     &                  method, mthlim, cfl, f, wave, s, amdq, apdq, 
+     &                  dtdx, use_fwave, rp1)
 ! ===================================================================
 ! 
 !     # Take one time step, updating q.
@@ -70,7 +71,7 @@
 !     -----------------------------------------
 ! 
       call rp1 (mx, meqn, mwaves, maux, mbc, mx, q, q, aux, aux, wave,
-     &s, amdq, apdq)
+     &          s, amdq, apdq)
 ! 
 !     # Modify q for Godunov update:
 !     # Note this may not correspond to a conservative flux-differencing
@@ -95,7 +96,7 @@
          end do
       end do
 ! 
-      if (method(2).eq.1) go to 30
+      if (method(2).eq.1) go to 20
 ! 
 !     # compute correction fluxes for second order q_{xx} terms:
 !     ----------------------------------------------------------
@@ -111,7 +112,7 @@
          if (mylim.eq.1) then
 !          # transmission-based limiter:
             call trlimit (meqn, mwaves, maux, mbc, mx, aux, wave, s,
-     &       mthlim)
+     &                    mthlim)
          else
 !          # original:
             call limiter (mx, meqn, mwaves, mbc, mx, wave, s, mthlim)
@@ -119,28 +120,30 @@
       end if
   
 ! 
-      do 20 i=1,mx+1
-         do 20 m=1,meqn
-         do 10 mw=1,mwaves
-            dtdxave=0.5d0*(dtdx(i-1)+dtdx(i))
-            f(m,i)=f(m,i)+0.5d0*dabs(s(mw,i))*(1.d0-dabs(s(mw,i))*
-     &       dtdxave)*wave(m,mw,i)
+      do i=1,mx+1
+         do m=1,meqn
+            do 10 mw=1,mwaves
+               dtdxave=0.5d0*(dtdx(i-1)+dtdx(i))
+               f(m,i)=f(m,i)+0.5d0*dabs(s(mw,i))*(1.d0-dabs(s(mw,i))*
+     &                dtdxave)*wave(m,mw,i)
 ! 
 !              # third order corrections:
 !              # (still experimental... works well for smooth solutions
 !              # with no limiters but not well with limiters so far.
 ! 
   
-            if (method(2).lt.3) go to 10
-            if (s(i,mw).gt.0.d0) then
-               dq2=wave(m,mw,i)-wave(m,mw,i-1)
-            else
-               dq2=wave(m,mw,i+1)-wave(m,mw,i)
-            end if
-            f(m,i)=f(m,i)-s(mw,i)/6.d0*(1.d0-(s(mw,i)*dtdxave)**2)*dq2
+               if (method(2).lt.3) go to 10
+               if (s(i,mw).gt.0.d0) then
+                  dq2=wave(m,mw,i)-wave(m,mw,i-1)
+               else
+                  dq2=wave(m,mw,i+1)-wave(m,mw,i)
+               end if
+               f(m,i)=f(m,i)-s(mw,i)/6.d0*(1.d0-(s(mw,i)*dtdxave)**2)*
+     &                dq2
   
-   10    continue
-   20 continue
+   10       continue
+         end do
+      end do
 ! 
 ! 
 !     # update q by differencing correction fluxes
@@ -154,6 +157,6 @@
          end do
       end do
 ! 
-   30 continue
+   20 continue
       return
       end

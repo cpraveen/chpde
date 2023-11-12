@@ -1,9 +1,6 @@
-  
-! 
-! 
 !     =====================================================
       subroutine rp1 (maxm, meqn, mwaves, maux, mbc, mx, ql, qr, auxl,
-     &auxr, wave, s, amdq, apdq)
+     &                auxr, wave, s, amdq, apdq)
 !     =====================================================
 ! 
 !     # Riemann solver for the acoustics equations in 1d,

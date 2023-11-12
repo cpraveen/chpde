@@ -1,7 +1,7 @@
   
 !     =================================================================
       subroutine bc1 (meqn, mbc, mx, xlower, dx, q, maux, aux, t, dt,
-     &mthbc)
+     &                mthbc)
 !     =================================================================
 ! 
 !     # Standard boundary condition choices for claw2
@@ -47,101 +47,109 @@
 !-------------------------------------------------------
 !     # left boundary:
 !-------------------------------------------------------
-      go to (10,40,60,80),mthbc(1)+1
+      go to (10,20,30,40) mthbc(1)+1
 ! 
    10 continue
 !     # user-specified boundary conditions
 !     # oscillating wall
-      do 20 m=1,meqn
-         do 20 ibc=1,mbc
-         q(m,1-ibc)=q(m,ibc)
-   20 continue
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,1-ibc)=q(m,ibc)
+         end do
+      end do
 !     # wall velocity:
       vwall=a1*g0((t-t1)/tw1)
 !     # adjust the normal velocity:
-      do 30 ibc=1,mbc
+      do ibc=1,mbc
          q(2,1-ibc)=2.0d0*vwall-q(2,ibc)
-   30 continue
-      go to 110
+      end do
+      go to 50
 ! 
-   40 continue
+   20 continue
 !     # zero-order extrapolation:
-      do 50 m=1,meqn
-         do 50 ibc=1,mbc
-         q(m,1-ibc)=q(m,1)
-   50 continue
-      go to 110
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,1-ibc)=q(m,1)
+         end do
+      end do
+      go to 50
   
-   60 continue
+   30 continue
 !     # periodic:
-      do 70 m=1,meqn
-         do 70 ibc=1,mbc
-         q(m,1-ibc)=q(m,mx+1-ibc)
-   70 continue
-      go to 110
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,1-ibc)=q(m,mx+1-ibc)
+         end do
+      end do
+      go to 50
   
-   80 continue
+   40 continue
 !     # solid wall (assumes 2'nd component is velocity or momentum in x)
-      do 90 m=1,meqn
-         do 90 ibc=1,mbc
-         q(m,1-ibc)=q(m,ibc)
-   90 continue
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,1-ibc)=q(m,ibc)
+         end do
+      end do
 !     # negate the normal velocity:
-      do 100 ibc=1,mbc
+      do ibc=1,mbc
          q(2,1-ibc)=-q(2,ibc)
-  100 continue
-      go to 110
+      end do
+      go to 50
   
-  110 continue
+   50 continue
   
 !-------------------------------------------------------
 !     # right boundary:
 !-------------------------------------------------------
-      go to (120,150,170,190),mthbc(2)+1
+      go to (60,70,80,90) mthbc(2)+1
 ! 
-  120 continue
+   60 continue
 !     # user-specified boundary conditions
 !     # oscillating wall
-      do 130 m=1,meqn
-         do 130 ibc=1,mbc
-         q(m,mx+ibc)=q(m,mx+1-ibc)
-  130 continue
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,mx+ibc)=q(m,mx+1-ibc)
+         end do
+      end do
 !     # wall velocity:
       vwall=a2*g0((t-t2)/tw2)
 !     # adjust the normal velocity:
-      do 140 ibc=1,mbc
+      do ibc=1,mbc
          q(2,mx+ibc)=2.0d0*vwall-q(2,mx+1-ibc)
-  140 continue
-      go to 220
+      end do
+      go to 100
   
-  150 continue
+   70 continue
 !     # zero-order extrapolation:
-      do 160 m=1,meqn
-         do 160 ibc=1,mbc
-         q(m,mx+ibc)=q(m,mx)
-  160 continue
-      go to 220
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,mx+ibc)=q(m,mx)
+         end do
+      end do
+      go to 100
   
-  170 continue
+   80 continue
 !     # periodic:
-      do 180 m=1,meqn
-         do 180 ibc=1,mbc
-         q(m,mx+ibc)=q(m,ibc)
-  180 continue
-      go to 220
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,mx+ibc)=q(m,ibc)
+         end do
+      end do
+      go to 100
   
-  190 continue
+   90 continue
 !     # solid wall (assumes 2'nd component is velocity or momentum in x)
-      do 200 m=1,meqn
-         do 200 ibc=1,mbc
-         q(m,mx+ibc)=q(m,mx+1-ibc)
-  200 continue
-      do 210 ibc=1,mbc
+      do m=1,meqn
+         do ibc=1,mbc
+            q(m,mx+ibc)=q(m,mx+1-ibc)
+         end do
+      end do
+      do ibc=1,mbc
          q(2,mx+ibc)=-q(2,mx+1-ibc)
-  210 continue
-      go to 220
+      end do
+      go to 100
   
-  220 continue
+  100 continue
 ! 
       return
       end

@@ -1,6 +1,6 @@
 ! ===================================================================
       subroutine trlimit (meqn, mwaves, maux, mbc, mx, aux, wave, s,
-     &mthlim)
+     &                    mthlim)
 ! ===================================================================
 ! 
 !     # Transmission-based limiter for acoustics equations
@@ -31,12 +31,12 @@
 !     # use the fact that second component of wave is strength alpha sin
 !     # second component of eigenvector is 1.
 ! 
-      do 10 i=0,mx+1
-!          # 1-wave at this cell and neighbor:
+      do i=0,mx+1
+!        1-wave at this cell and neighbor:
          alf1i=wave(2,1,i)
          if (alf1i.ne.0.d0) then
             alf1ip=wave(2,1,i+1)
-!             # transmitted part of neighboring 1-wave:
+!           transmitted part of neighboring 1-wave:
             alf1ipt=(2.d0*aux(1,i)/(aux(1,i-1)+aux(1,i)))*alf1ip
             wlimitr=philim(alf1i,alf1ipt,mthlim(1))
             do m=1,meqn
@@ -44,18 +44,18 @@
             end do
          end if
   
-!          # 2-wave at this cell and neighbor:
+!        2-wave at this cell and neighbor:
          alf2i=wave(2,2,i)
          if (alf2i.ne.0.d0) then
             alf2im=wave(2,2,i-1)
-!             # transmitted part of neighboring 2-wave:
+!           transmitted part of neighboring 2-wave:
             alf2imt=(2.d0*aux(1,i-1)/(aux(1,i-1)+aux(1,i)))*alf2im
             wlimitr=philim(alf2i,alf2imt,mthlim(2))
             do m=1,meqn
                wave(m,2,i)=wlimitr*wave(m,2,i)
             end do
          end if
-   10 continue
+      end do
 ! 
       return
       end

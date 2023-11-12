@@ -5,7 +5,6 @@
       common /combc/ omega
       common /comwall/ pi,t1,a1,tw1,t2,a2,tw2
   
-! 
 !     # Set the material parameters for the acoustic equations
 ! 
       open (unit=7,file='setprob.data',status='old',form='formatted')
@@ -38,7 +37,6 @@
   
 !     # for periodic:
 !     #       rho = mod(1:1000,2)*2 + 1;
-  
   
       do i=1,1000
          read (8,*) rho(i)

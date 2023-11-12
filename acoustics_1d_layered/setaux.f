@@ -11,11 +11,9 @@
 !     # rho value for i-1 < x < i is determined by rho(i)
 !     # input from setprob.rho in setprob.f
 ! 
-! 
       implicit double precision (a-h,o-z)
       dimension aux(maux,1-mbc:mx+mbc)
       common /comaux/ rho(1000)
-  
   
       do i=1-mbc,mx+mbc
          xcell=xlower+(i-0.5d0)*dx
