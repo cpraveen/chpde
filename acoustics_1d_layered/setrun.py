@@ -161,12 +161,13 @@ def setrun(claw_pkg='classic'):
     clawdata.dt_max = 1.000000e+99
     
     # Desired Courant number if variable dt used 
-    clawdata.cfl_desired = 0.400000
+    clawdata.cfl_desired = 0.800000
+
     # max Courant number to allow without retaking step with a smaller dt:
-    clawdata.cfl_max = 0.500000
+    clawdata.cfl_max = 1.000000
     
     # Maximum number of time steps to allow between output times:
-    clawdata.steps_max = 5000
+    clawdata.steps_max = 50000
 
 
     # ------------------

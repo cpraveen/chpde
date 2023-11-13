@@ -25,3 +25,7 @@ Set `mylim=1` in `setrun.py` and run
 make .plots
 open _plots/_PlotIndex.html
 ```
+
+## Exercise
+
+Run with 480 and 2400 cells, and make figures as in the book. Try both dt = dx and dt = 0.8*dx.
