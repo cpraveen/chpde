@@ -5,8 +5,14 @@ As shown in Figures 9.8 and 9.9.
 
 The transmission-based limiter of Fogarty and LeVeque is used when mylim=1
 in setprob.data.  This works better than the standard limiter, and is
-implemented in trlimit.f as called from step1.f (a modified version of this
+implemented in trlimit.f as called from step1.f90 (a modified version of this
 library routine is in this directory).
+
+See differences in step1
+
+```
+diff ./step1.f90 $(CLAW)/classic/src/1d/step1.f90
+```
 
 ## Standard wave limiter
 

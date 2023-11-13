@@ -54,7 +54,7 @@ SOURCES = \
   setprob.f \
   bc1.f \
   trlimit.f \
-  step1.f \
+  step1.f90 \
   setaux.f \
   $(CLAW)/classic/src/1d/philim.f90 \
   $(CLAW)/riemann/src/rp1_acoustics_variable.f90
