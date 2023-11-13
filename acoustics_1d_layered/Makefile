@@ -51,13 +51,13 @@ MODULES = \
 
 SOURCES = \
   qinit.f \
-  rp1acv.f \
   setprob.f \
   bc1.f \
   trlimit.f \
   step1.f \
   setaux.f \
-  $(CLAW)/classic/src/1d/philim.f90
+  $(CLAW)/classic/src/1d/philim.f90 \
+  $(CLAW)/riemann/src/rp1_acoustics_variable.f90
 
 #-------------------------------------------------------------------
 # Include Makefile containing standard definitions and make options:
