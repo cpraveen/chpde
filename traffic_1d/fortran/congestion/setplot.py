@@ -34,7 +34,7 @@ def setplot(plotdata):
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(name='solution', plot_type='1d')
     plotitem.plot_var = 0
-    plotitem.plotstyle = '-o'
+    plotitem.plotstyle = '-'
     plotitem.color = 'b'
     plotitem.show = True       # show on plot?
     

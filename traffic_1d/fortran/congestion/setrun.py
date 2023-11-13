@@ -37,8 +37,8 @@ def setrun(claw_pkg='classic'):
     #------------------------------------------------------------------
     # Sample setup to write one line to setprob.data ...
     probdata = rundata.new_UserData(name='probdata',fname='setprob.data')
-    probdata.add_param('umax',     1.0,  'maximum speed')
-    probdata.add_param('beta',     0.2,  'width of the inital Gaussina pulse')
+    probdata.add_param('umax',    1.0,  'maximum speed')
+    probdata.add_param('beta',    0.01, 'width of the inital Gaussina pulse')
     
     #------------------------------------------------------------------
     # Standard Clawpack parameters to be written to claw.data:

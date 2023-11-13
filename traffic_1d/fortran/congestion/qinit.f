@@ -15,10 +15,9 @@ c
 c
       do 150 i=1,mx
 	     xcell = xlower + (i-0.5d0)*dx
-	     q(i,1) = dexp(-beta * (xcell-0.3d0)**2)
+	     q(i,1) = 0.25d0 + 0.7d0 * dexp(-beta * xcell**2)
 
-  150    continue
+  150 continue
 c
       return
       end
-
