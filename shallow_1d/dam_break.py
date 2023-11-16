@@ -20,7 +20,8 @@ import numpy as np
 from clawpack import riemann
 from clawpack.riemann.shallow_roe_with_efix_1D_constants import depth, momentum, num_eqn
 
-def setup(use_petsc=False,kernel_language='Fortran',outdir='./_output',solver_type='classic',
+def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
+          outdir='./_output',solver_type='classic',
           riemann_solver='roe', disable_output=False):
 
     if use_petsc:
@@ -64,33 +65,35 @@ def setup(use_petsc=False,kernel_language='Fortran',outdir='./_output',solver_ty
     
     xc = state.grid.x.centers
 
-    IC='dam-break'
-    x0=0.
+    x0=0.0
 
     if IC=='dam-break':
-        hl = 3.
-        ul = 0.
-        hr = 1.
-        ur = 0.
+        tf = 2.0
+        hl = 3.0
+        ul = 0.0
+        hr = 1.0
+        ur = 0.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
     elif IC=='2-shock':
-        hl = 1.
-        ul = 1.
-        hr = 1.
-        ur = -1.
+        tf = 2.0
+        hl = 1.0
+        ul = 1.0
+        hr = 1.0
+        ur = -1.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
     elif IC=='perturbation':
+        tf = 3.0
         eps=0.1
         state.q[depth,:] = 1.0 + eps*np.exp(-(xc-x0)**2/0.5)
-        state.q[momentum,:] = 0.
+        state.q[momentum,:] = 0.0
 
     claw = pyclaw.Controller()
     claw.keep_copy = True
     if disable_output:
         claw.output_format = None
-    claw.tfinal = 2.0
+    claw.tfinal = tf
     claw.solution = pyclaw.Solution(state,domain)
     claw.solver = solver
     claw.outdir = outdir
