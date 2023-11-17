@@ -83,6 +83,14 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
         ur = -1.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
+    elif IC=='2-rare':
+        tf = 3.0
+        hl = 1.0
+        ul = -0.5
+        hr = 1.0
+        ur = 0.5
+        state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
+        state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
     elif IC=='perturbation':
         tf = 3.0
         eps=0.1
@@ -114,6 +122,7 @@ def setplot(plotdata):
 
     # Figure for depth
     plotfigure = plotdata.new_plotfigure(name='Water height', figno=0)
+    plotfigure.kwargs = {'figsize':[8,7]}
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
