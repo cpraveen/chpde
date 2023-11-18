@@ -27,7 +27,8 @@ from clawpack.riemann.euler_with_efix_1D_constants import *
 
 gamma = 1.4 # Ratio of specific heats
 
-def setup(use_petsc=False,outdir='./_output',solver_type='sharpclaw',kernel_language='Fortran',tfluct_solver=True):
+def setup(use_petsc=False,outdir='./_output',solver_type='sharpclaw',
+          kernel_language='Fortran',tfluct_solver=True):
 
     if use_petsc:
         import clawpack.petclaw as pyclaw
@@ -46,11 +47,11 @@ def setup(use_petsc=False,outdir='./_output',solver_type='sharpclaw',kernel_lang
         solver.cfl_desired = 0.6
         solver.tfluct_solver = tfluct_solver
         if solver.tfluct_solver:
-            from clawpack.pyclaw.examples.euler_1d import euler_tfluct
+            import euler_tfluct
             solver.tfluct = euler_tfluct
         solver.lim_type = 1
         solver.char_decomp = 2
-        from clawpack.pyclaw.sharpclaw import euler_sharpclaw1
+        import euler_sharpclaw1
         solver.fmod = euler_sharpclaw1
     elif solver_type=='classic':
         solver = pyclaw.ClawSolver1D(rs)
