@@ -2,20 +2,21 @@
 % Traffic flow examples.  Car velocity depends on density seen by driver.
 % This looks best if you make the matlab plot window tall and skinny.
 % R.J. LeVeque,  January, 1998
-
+function traffic(example)
 
 % Choose an example and un-comment:
 
+if example == 1
 % Example 1
 % traffic hitting wall and shock wave:
 
-   % wall = 10;
-   % xlim = [-5 11];
-   % tlim = [-16 2];
-   % carpos = -25:1:5;
-   % umax = 1.5;
-   % nsteps = 40
-
+   wall = 10;
+   xlim = [-5 11];
+   tlim = [-16 2];
+   carpos = -25:1:5;
+   umax = 1.5;
+   nsteps = 40
+elseif example == 2
 % Example 2
 % rarefaction wave when the light turns green:
 
@@ -26,19 +27,20 @@
    umax = 1.0;
    nsteps = 20
 
-
+else
 % Example 3
 % local congestion giving a shock followed by rarefaction:
 % (also try this data with velocity = 1 below to see linear advection)
 
-   % wall = 100;
-       %carpos = [-40:2:1 1.5:.5:2.5 3:2:12];
-       %carpos = [-50:2:-1 -.5:.5:2.5 3:2:32];
-   % carpos = [-47:4:-3 -2.5:.5:2.5 3:4:43];
-   % xlim = [-20 40];
-   % tlim = [-20 2];
-   % umax = 1.5;
-   % nsteps = 40;
+   wall = 100;
+   carpos = [-40:2:1 1.5:.5:2.5 3:2:12];
+   %carpos = [-50:2:-1 -.5:.5:2.5 3:2:32];
+   %carpos = [-47:4:-3 -2.5:.5:2.5 3:4:43];
+   xlim = [-20 40];
+   tlim = [-20 2];
+   umax = 1.5;
+   nsteps = 40;
+end
 
 clf
 ncar = length(carpos);
@@ -138,4 +140,4 @@ for n=1:nsteps
   % makeframegif
   end;
 
-
+end

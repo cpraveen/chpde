@@ -111,6 +111,18 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
     return claw
 
 #--------------------------
+def velocity(current_data):
+    q  = current_data.q
+    return q[1,:]/q[0,:]
+
+#--------------------------
+def pressure(current_data):
+    q  = current_data.q
+    rho = q[0,:]
+    vel = q[1,:] / rho
+    return  (gamma - 1.0) * (q[2,:] - 0.5 * rho * vel**2)
+
+#--------------------------
 def setplot(plotdata):
 #--------------------------
     """ 
@@ -121,22 +133,34 @@ def setplot(plotdata):
     plotdata.clearfigures()  # clear any old figures,axes,items data
 
     plotfigure = plotdata.new_plotfigure(name='', figno=0)
+    plotfigure.kwargs = {'figsize': [8,10], 'layout': 'tight'}
 
+    # Density
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.axescmd = 'subplot(211)'
+    plotaxes.axescmd = 'subplot(311)'
     plotaxes.title = 'Density'
 
     plotitem = plotaxes.new_plotitem(plot_type='1d')
     plotitem.plot_var = density
-    plotitem.kwargs = {'linewidth':3}
+    plotitem.kwargs = {'linewidth':2}
     
+    # Velocity
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.axescmd = 'subplot(212)'
-    plotaxes.title = 'Energy'
+    plotaxes.axescmd = 'subplot(312)'
+    plotaxes.title = 'Velocity'
 
     plotitem = plotaxes.new_plotitem(plot_type='1d')
-    plotitem.plot_var = energy
-    plotitem.kwargs = {'linewidth':3}
+    plotitem.plot_var = velocity
+    plotitem.kwargs = {'linewidth':2}
+    
+    # Pressure
+    plotaxes = plotfigure.new_plotaxes()
+    plotaxes.axescmd = 'subplot(313)'
+    plotaxes.title = 'Pressure'
+
+    plotitem = plotaxes.new_plotitem(plot_type='1d')
+    plotitem.plot_var = velocity
+    plotitem.kwargs = {'linewidth':2}
     
     return plotdata
 

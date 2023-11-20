@@ -30,8 +30,7 @@ def setup(use_petsc=0,outdir='./_output',solver_type='classic'):
 
     x = pyclaw.Dimension(-1.0,1.0,500,name='x')
     domain = pyclaw.Domain(x)
-    num_eqn = 1
-    state = pyclaw.State(domain,num_eqn)
+    state = pyclaw.State(domain,solver.num_eqn)
 
     grid = state.grid
     xc=grid.p_centers[0]
@@ -71,8 +70,9 @@ def setplot(plotdata):
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d')
     plotitem.plot_var = 0
-    plotitem.plotstyle = '-o'
+    plotitem.plotstyle = '-'
     plotitem.color = 'b'
+    plotitem.kwargs = {'linewidth': 2}
     
     return plotdata
 
