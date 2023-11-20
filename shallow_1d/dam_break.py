@@ -122,7 +122,7 @@ def setplot(plotdata):
 
     # Figure for depth
     plotfigure = plotdata.new_plotfigure(name='Water height', figno=0)
-    plotfigure.kwargs = {'figsize':[8,7]}
+    plotfigure.kwargs = {'figsize':[8,7], 'layout': 'tight'}
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()

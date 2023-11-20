@@ -98,6 +98,7 @@ def setplot(plotdata):
 
     # Figure for depth
     plotfigure = plotdata.new_plotfigure(name='Depth', figno=0)
+    plotfigure.kwargs = {'layout': 'tight'}
 
     # Axes for water depth
     plotaxes = plotfigure.new_plotaxes()
