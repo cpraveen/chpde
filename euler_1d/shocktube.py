@@ -21,18 +21,38 @@ from clawpack.riemann.euler_with_efix_1D_constants import density, momentum, ene
 
 gamma = 1.4 # Ratio of specific heats
 
-def setup(use_petsc=False, outdir='./_output', solver_type='classic',
-          kernel_language='Python',disable_output=False):
+def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output', 
+          solver_type='classic',kernel_language='Python',disable_output=False):
 
     if use_petsc:
         import clawpack.petclaw as pyclaw
     else:
         from clawpack import pyclaw
 
+    efix = True # Entropy fix for Roe
+
     if kernel_language =='Python':
-        rs = riemann.euler_1D_py.euler_hllc_1D
+        if flux == 'hll':
+            rs = riemann.euler_1D_py.euler_hll_1D
+        elif flux == 'hllc':
+            rs = riemann.euler_1D_py.euler_hllc_1D
+        elif flux == 'roe':
+            rs = riemann.euler_1D_py.euler_roe_1D
+            efix = False # not implemented in 1d Python
+        else:
+            print("Python kernel:")
+            print("   Use flux = hll, hllc, roe")
+            exit(1)
     elif kernel_language =='Fortran':
-        rs = riemann.euler_hlle_1D
+        if flux == 'hlle':
+            rs = riemann.euler_hlle_1D
+        elif flux == 'roe':
+            # This always has efix enabled
+            rs = riemann.euler_with_efix_1D
+        else:
+            print("Fortran kernel:")
+            print("   Use flux = hlle, roe")
+            exit(1)
 
     if solver_type=='sharpclaw':
         solver = pyclaw.SharpClawSolver1D(rs)
@@ -40,6 +60,7 @@ def setup(use_petsc=False, outdir='./_output', solver_type='classic',
         solver = pyclaw.ClawSolver1D(rs)
 
     solver.kernel_language = kernel_language
+    solver.order = order
 
     solver.bc_lower[0]=pyclaw.BC.extrap
     solver.bc_upper[0]=pyclaw.BC.extrap
@@ -50,17 +71,31 @@ def setup(use_petsc=False, outdir='./_output', solver_type='classic',
     state = pyclaw.State(domain,num_eqn)
 
     state.problem_data['gamma'] = gamma
-    state.problem_data['gamma1'] = gamma - 1.
+    state.problem_data['gamma1'] = gamma - 1.0
+    state.problem_data['efix'] = efix
 
     x = state.grid.x.centers
 
-    rho_l = 1.; rho_r = 1./8
-    p_l = 1.; p_r = 0.1
-    state.q[density ,:] = (x<0.)*rho_l + (x>=0.)*rho_r
-    state.q[momentum,:] = 0.
-    velocity = state.q[momentum,:]/state.q[density,:]
-    pressure = (x<0.)*p_l + (x>=0.)*p_r
-    state.q[energy  ,:] = pressure/(gamma - 1.) + 0.5 * state.q[density,:] * velocity**2
+    if ic == 'sod':
+        rho_l, rho_r = 1.0, 0.125
+        u_l, u_r = 0.0, 0.0
+        p_l, p_r = 1.0, 0.1
+    elif ic == 'msod': # Modified to generate transonic rarefaction
+        rho_l, rho_r = 1.0, 0.125
+        u_l, u_r = 0.75, 0.0
+        p_l, p_r = 1.0, 0.1
+    else: # Stationary contact
+        rho_l, rho_r = 2.0, 1.0
+        u_l, u_r = 0.0, 0.0
+        p_l, p_r = 1.0, 1.0
+
+
+    velocity = (x<0.0)*u_l + (x>=0.0)*u_r
+    pressure = (x<0.0)*p_l + (x>=0.0)*p_r
+
+    state.q[density ,:] = (x<0.0)*rho_l + (x>=0.0)*rho_r
+    state.q[momentum,:] = state.q[density,:] * velocity
+    state.q[energy  ,:] = pressure/(gamma - 1.0) + 0.5 * state.q[density,:] * velocity**2
 
     claw = pyclaw.Controller()
     claw.tfinal = 0.4
