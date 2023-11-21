@@ -32,7 +32,7 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
     efix = True # Entropy fix for Roe
 
     if kernel_language =='Python':
-        if flux == 'hll':
+        if flux == 'hll' or flux == 'hlle':
             rs = riemann.euler_1D_py.euler_hll_1D
         elif flux == 'hllc':
             rs = riemann.euler_1D_py.euler_hllc_1D
@@ -44,7 +44,7 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
             print("   Use flux = hll, hllc, roe")
             exit(1)
     elif kernel_language =='Fortran':
-        if flux == 'hlle':
+        if flux == 'hll' or flux == 'hlle':
             rs = riemann.euler_hlle_1D
         elif flux == 'roe':
             # This always has efix enabled
@@ -159,7 +159,7 @@ def setplot(plotdata):
     plotaxes.title = 'Pressure'
 
     plotitem = plotaxes.new_plotitem(plot_type='1d')
-    plotitem.plot_var = velocity
+    plotitem.plot_var = pressure
     plotitem.kwargs = {'linewidth':2}
     
     return plotdata
