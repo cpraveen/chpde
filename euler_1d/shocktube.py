@@ -55,9 +55,11 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
             exit(1)
 
     if solver_type=='sharpclaw':
+        # uses 5th order WENO of Jiang and Shu
         solver = pyclaw.SharpClawSolver1D(rs)
     elif solver_type=='classic':
         solver = pyclaw.ClawSolver1D(rs)
+        solver.limiters = pyclaw.limiters.tvd.minmod
 
     solver.kernel_language = kernel_language
     solver.order = order
@@ -65,8 +67,37 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
     solver.bc_lower[0]=pyclaw.BC.extrap
     solver.bc_upper[0]=pyclaw.BC.extrap
 
+    if ic == 'sod':
+        xmin, xmax, tfinal = -1.0, 1.0, 0.4
+        rho_l, rho_r = 1.0, 0.125
+        u_l, u_r = 0.0, 0.0
+        p_l, p_r = 1.0, 0.1
+    elif ic == 'msod': # Modified to generate transonic rarefaction
+        xmin, xmax, tfinal = -1.0, 1.0, 0.4
+        rho_l, rho_r = 1.0, 0.125
+        u_l, u_r = 0.75, 0.0
+        p_l, p_r = 1.0, 0.1
+    elif ic == 'contact': # Stationary contact
+        xmin, xmax, tfinal = -1.0, 1.0, 0.4
+        rho_l, rho_r = 2.0, 1.0
+        u_l, u_r = 0.0, 0.0
+        p_l, p_r = 1.0, 1.0
+    elif ic == 'startup': # Startup errors
+        xmin, xmax, tfinal = -5.0, 15.0, 1.0
+        rho_l, rho_r = 5.6698, 1.0
+        u_l, u_r = 9.0299, 0.0
+        p_l, p_r = 100.0, 1.0
+    elif ic == 'sshock': # Slow shock
+        xmin, xmax, tfinal = -5.0, 15.0, 1.0
+        rho_l, rho_r = 5.6698, 1.0
+        u_l, u_r = -1.4701, -10.5
+        p_l, p_r = 100.0, 1.0
+    else:
+        print("ic = sod, msod, contact, startup, sshock")
+        exit(1)
+
     mx = 800
-    x = pyclaw.Dimension(-1.0,1.0,mx,name='x')
+    x = pyclaw.Dimension(xmin,xmax,mx,name='x')
     domain = pyclaw.Domain([x])
     state = pyclaw.State(domain,num_eqn)
 
@@ -76,20 +107,6 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
 
     x = state.grid.x.centers
 
-    if ic == 'sod':
-        rho_l, rho_r = 1.0, 0.125
-        u_l, u_r = 0.0, 0.0
-        p_l, p_r = 1.0, 0.1
-    elif ic == 'msod': # Modified to generate transonic rarefaction
-        rho_l, rho_r = 1.0, 0.125
-        u_l, u_r = 0.75, 0.0
-        p_l, p_r = 1.0, 0.1
-    else: # Stationary contact
-        rho_l, rho_r = 2.0, 1.0
-        u_l, u_r = 0.0, 0.0
-        p_l, p_r = 1.0, 1.0
-
-
     velocity = (x<0.0)*u_l + (x>=0.0)*u_r
     pressure = (x<0.0)*p_l + (x>=0.0)*p_r
 
@@ -98,7 +115,7 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
     state.q[energy  ,:] = pressure/(gamma - 1.0) + 0.5 * state.q[density,:] * velocity**2
 
     claw = pyclaw.Controller()
-    claw.tfinal = 0.4
+    claw.tfinal = tfinal
     claw.solution = pyclaw.Solution(state,domain)
     claw.solver = solver
     claw.num_output_times = 10
