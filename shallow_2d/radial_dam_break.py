@@ -20,15 +20,14 @@ import numpy as np
 from clawpack import riemann
 from clawpack.riemann.shallow_roe_with_efix_2D_constants import depth, x_momentum, y_momentum, num_eqn
 
-def qinit(state,h_in=2.,h_out=1.,dam_radius=0.5):
-    x0=0.
-    y0=0.
+def qinit(state,h_in=2.0,h_out=1.0,dam_radius=0.5):
+    x0, y0 = 0.0, 0.0
     X, Y = state.p_centers
     r = np.sqrt((X-x0)**2 + (Y-y0)**2)
 
     state.q[depth     ,:,:] = h_in*(r<=dam_radius) + h_out*(r>dam_radius)
-    state.q[x_momentum,:,:] = 0.
-    state.q[y_momentum,:,:] = 0.
+    state.q[x_momentum,:,:] = 0.0
+    state.q[y_momentum,:,:] = 0.0
 
     
 def setup(kernel_language='Fortran', use_petsc=False, outdir='./_output',
@@ -50,18 +49,17 @@ def setup(kernel_language='Fortran', use_petsc=False, outdir='./_output',
     elif solver_type == 'sharpclaw':
         solver = pyclaw.SharpClawSolver2D(rs)
 
+    solver.kernel_language = kernel_language
+
     solver.bc_lower[0] = pyclaw.BC.extrap
     solver.bc_upper[0] = pyclaw.BC.wall
     solver.bc_lower[1] = pyclaw.BC.extrap
     solver.bc_upper[1] = pyclaw.BC.wall
 
     # Domain:
-    xlower = -2.5
-    xupper = 2.5
-    mx = 150
-    ylower = -2.5
-    yupper = 2.5
-    my = 150
+    xlower, xupper = -2.5, 2.5
+    ylower, yupper = -2.5, 2.5
+    mx, my = 150, 150
     x = pyclaw.Dimension(xlower,xupper,mx,name='x')
     y = pyclaw.Dimension(ylower,yupper,my,name='y')
     domain = pyclaw.Domain([x,y])
@@ -121,8 +119,8 @@ def setplot(plotdata):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [0., 2.5]
-    plotaxes.ylimits = [0., 2.1]
+    plotaxes.xlimits = [0.0, 2.5]
+    plotaxes.ylimits = [0.0, 2.1]
     plotaxes.title = 'Scatter plot of h'
 
     # Set up for item on these axes:
@@ -154,7 +152,7 @@ def setplot(plotdata):
     plotitem.plot_var = x_momentum
     plotitem.pcolor_cmap = colormaps.yellow_red_blue
     plotitem.add_colorbar = True
-    plotitem.show = False       # show on plot?
+    plotitem.show = True        # show on plot?
     
 
     # Figure for y-momentum
@@ -172,7 +170,7 @@ def setplot(plotdata):
     plotitem.plot_var = y_momentum
     plotitem.pcolor_cmap = colormaps.yellow_red_blue
     plotitem.add_colorbar = True
-    plotitem.show = False       # show on plot?
+    plotitem.show = True        # show on plot?
     
     return plotdata
 
