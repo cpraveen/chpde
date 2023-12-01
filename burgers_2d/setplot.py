@@ -20,6 +20,7 @@ def setplot(plotdata):
 
 
     from clawpack.visclaw import colormaps
+    import numpy as np
 
     plotdata.clearfigures()  # clear any old figures,axes,items data
     
@@ -57,9 +58,10 @@ def setplot(plotdata):
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
     plotitem.plot_var = 0
-    plotitem.contour_nlevels = 20
-    plotitem.contour_min = 0.01
-    plotitem.contour_max = 0.99
+    plotitem.contour_levels = np.arange(0.05, 1.0, 0.05)
+    #plotitem.contour_nlevels = 20
+    #plotitem.contour_min = 0.01
+    #plotitem.contour_max = 0.99
     plotitem.contour_colors = 'k'
 
 
