@@ -9,7 +9,7 @@ c
 c     # Set the parameter value a used in the flux function
 c     # a is passed to rp1.f in comprob
 c
-      open(unit=7,file='setprob.data',status='old',form='formatted')
+      call opendatafile(7,'setprob.data')
 
       read(7,*) ur
       read(7,*) ul

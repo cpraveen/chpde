@@ -124,12 +124,10 @@ def setrun(claw_pkg='classic'):
         clawdata.total_steps = 1
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
-
-    clawdata.output_format = 'ascii'      # 'ascii', 'binary', 'netcdf'
-
-    clawdata.output_q_components = 'all'   # could be list such as [True,True]
+    clawdata.output_format = 'ascii'         # 'ascii', 'binary', 'netcdf'
+    clawdata.output_q_components = 'all'     # could be list such as [True,True]
     clawdata.output_aux_components = 'none'  # could be list
-    clawdata.output_aux_onlyonce = True    # output aux arrays only at t0
+    clawdata.output_aux_onlyonce = True      # output aux arrays only at t0
     
 
     # ---------------------------------------------------
@@ -185,7 +183,7 @@ def setrun(claw_pkg='classic'):
     #   2 or 'superbee' ==> superbee
     #   3 or 'vanleer'  ==> van Leer
     #   4 or 'mc'       ==> MC limiter
-    clawdata.limiter = clawdata.num_waves * ['mc']
+    clawdata.limiter = clawdata.num_waves * ['minmod']
     
     clawdata.use_fwaves = False    # True ==> use f-wave version of algorithms
     
