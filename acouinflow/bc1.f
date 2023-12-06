@@ -1,6 +1,3 @@
-
-c
-c
 c     =====================================================
       subroutine bc1(meqn,mbc,mx,xlower,dx,q,maux,aux,t,dt,mthbc)
 c     =====================================================
@@ -47,9 +44,9 @@ c     # strength of 1-wave (extrapolate the outgoing wave):
 c     # strength of 2-wave (specify the incoming wave):
       if (omega*t .le. 8.d0*datan(1.d0)) then
            w2 = 0.5d0 * dsin(omega*t) 
-	else
-	   w2 = 0.d0
-	endif
+      else
+         w2 = 0.d0
+      endif
 
       do 105 ibc=1,mbc
          q(1,1-ibc) = -w1*zz + w2*zz
