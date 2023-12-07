@@ -6,7 +6,7 @@ c     # Set the velocity for scalar advection
 c     # This value is passed to the Riemann solver rp1.f in a common block
 c
 c
-      open(unit=7,file='setprob.data',status='old',form='formatted')
+      call opendatafile(7,'setprob.data')
 
       read(7,*) u1,u2
       read(7,*) rho1,rho2

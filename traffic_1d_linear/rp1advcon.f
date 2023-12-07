@@ -1,8 +1,6 @@
-c
-c
 c =========================================================
-      subroutine rp1(maxmx,meqn,mwaves,mbc,mx,ql,qr,auxl,auxr,
-     &		 wave,s,amdq,apdq)
+      subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,
+     &               wave,s,amdq,apdq)
 c =========================================================
 c
 c     # solve Riemann problems for the 1D advection equation q_t + (u*q)_x = 0.
@@ -26,39 +24,36 @@ c     # From the basic clawpack routine step1, rp is called with ql = qr = q.
 c
 c
       implicit double precision (a-h,o-z)
-      dimension   ql(1-mbc:maxmx+mbc, meqn)
-      dimension   qr(1-mbc:maxmx+mbc, meqn)
-      dimension auxl(1-mbc:maxmx+mbc, 1)
-      dimension auxr(1-mbc:maxmx+mbc, 1)
-      dimension    s(1-mbc:maxmx+mbc, mwaves)
-      dimension wave(1-mbc:maxmx+mbc, meqn, mwaves)
-      dimension amdq(1-mbc:maxmx+mbc, meqn)
-      dimension apdq(1-mbc:maxmx+mbc, meqn)
+      dimension   ql(meqn,1-mbc:maxmx+mbc)
+      dimension   qr(meqn,1-mbc:maxmx+mbc)
+      dimension auxl(maux,1-mbc:maxmx+mbc)
+      dimension auxr(maux,1-mbc:maxmx+mbc)
+      dimension    s(mwaves,1-mbc:maxmx+mbc)
+      dimension wave(meqn,mwaves,1-mbc:maxmx+mbc)
+      dimension amdq(meqn,1-mbc:maxmx+mbc)
+      dimension apdq(meqn,1-mbc:maxmx+mbc)
 c
+      do i=2-mbc,mx+mbc
+         ui  = auxl(1,i)
+         uim = auxr(1,i-1)
+         qi  = ql(1,i)
+         qim = qr(1,i-1)
 c
-c
-      do 30 i=2-mbc,mx+mbc
-c
-	 ui = auxl(i,1)
-	 uim = auxr(i-1,1)
-	 qi = ql(i,1)
-	 qim = qr(i-1,1)
-c
-	 if (ui .gt. 0.d0) then
-	     qstar = uim*qim/ui
-	     wave(i,1,1) = qi - qstar
-	     s(i,1) = ui
-	     amdq(i,1) = 0.d0
-	     apdq(i,1) = ui*qi - uim*qim
-	  else
-	     qstar = ui*qi/uim
-	     wave(i,1,1) = qstar - qim
-	     s(i,1) = uim
-	     amdq(i,1) = ui*qi - uim*qim
-	     apdq(i,1) = 0.d0
-          endif
+         if (ui .gt. 0.0d0) then
+            qstar = uim*qim/ui
+            wave(1,1,i) = qi - qstar
+            s(1,i) = ui
+            amdq(1,i) = 0.0d0
+            apdq(1,i) = ui*qi - uim*qim
+         else
+            qstar = ui*qi/uim
+            wave(1,1,i) = qstar - qim
+            s(1,i) = uim
+            amdq(1,i) = ui*qi - uim*qim
+            apdq(1,i) = 0.0d0
+         endif
 
-   30   continue
+      enddo
 c
       return
       end
