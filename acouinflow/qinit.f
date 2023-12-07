@@ -10,8 +10,8 @@ c
 c
       do i=1,mx
          xcell = xlower + (i-0.5d0)*dx
-         q(i,1) = 0.0
-         q(i,2) = 0.d0
+         q(i,1) = 0.0d0
+         q(i,2) = 0.0d0
       enddo
 c
       return
