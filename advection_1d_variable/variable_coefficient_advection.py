@@ -18,24 +18,20 @@ The boundary conditions are periodic.
 The initial data get stretched and compressed as they move through the
 fast and slow parts of the velocity field.
 """
-
-
 from __future__ import absolute_import
 import numpy as np
 
 def qinit(ic, state):
 
     # Initial Data parameters
-    beta = 100.
-    gamma = 0.
-    x0 = 0.3
-    x1 = 0.7
-    x2 = 0.9
+    beta, gamma = 100.0, 0.0
+    x0, x1, x2 = 0.3, 0.7, 0.9
 
-    x =state.grid.x.centers
+    x = state.grid.x.centers
     
     # Gaussian
     qg = np.exp(-beta * (x-x0)**2) * np.cos(gamma * (x - x0))
+
     # Step Function
     qs = (x > x1) * 1.0 - (x > x2) * 1.0
     
@@ -44,9 +40,10 @@ def qinit(ic, state):
     elif ic == 3: state.q[0,:] = qg + qs
 
 
+# Advection speed
 def auxinit(state):
     # Initialize petsc Structures for aux
-    xc=state.grid.x.centers
+    xc = state.grid.x.centers
     state.aux[0,:] = np.sin(2.*np.pi*xc)+2
     
 
@@ -75,16 +72,15 @@ def setup(ic=3,use_petsc=False,solver_type='classic',kernel_language='Python',
     solver.kernel_language = kernel_language
 
     solver.limiters = pyclaw.limiters.tvd.MC
-    solver.bc_lower[0] = 2
-    solver.bc_upper[0] = 2
-    solver.aux_bc_lower[0] = 2
-    solver.aux_bc_upper[0] = 2
+    solver.bc_lower[0] = pyclaw.BC.periodic
+    solver.bc_upper[0] = pyclaw.BC.periodic
+    solver.aux_bc_lower[0] = pyclaw.BC.periodic
+    solver.aux_bc_upper[0] = pyclaw.BC.periodic
 
     xlower=0.0; xupper=1.0; mx=100
     x    = pyclaw.Dimension(xlower,xupper,mx,name='x')
     domain = pyclaw.Domain(x)
-    num_aux=1
-    num_eqn = 1
+    num_aux, num_eqn = 1, 1
     state = pyclaw.State(domain,num_eqn,num_aux)
 
     qinit(ic, state)
