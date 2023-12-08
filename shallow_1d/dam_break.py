@@ -51,8 +51,7 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
     solver.bc_lower[0] = pyclaw.BC.extrap
     solver.bc_upper[0] = pyclaw.BC.extrap
 
-    xlower = -5.0
-    xupper = 5.0
+    xlower, xupper = -5.0, 5.0
     mx = 500
     x = pyclaw.Dimension(xlower,xupper,mx,name='x')
     domain = pyclaw.Domain(x)
@@ -60,12 +59,10 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
 
     # Gravitational constant
     state.problem_data['grav'] = 1.0
-    state.problem_data['dry_tolerance'] = 1e-3
+    state.problem_data['dry_tolerance'] = 1.0e-3
     state.problem_data['sea_level'] = 0.0
     
     xc = state.grid.x.centers
-
-    x0=0.0
 
     if IC=='dam-break':
         tf = 2.0
@@ -73,6 +70,7 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
         ul = 0.0
         hr = 1.0
         ur = 0.0
+        x0 = 0.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
     elif IC=='2-shock':
@@ -81,6 +79,7 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
         ul = 1.0
         hr = 1.0
         ur = -1.0
+        x0 = 0.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
     elif IC=='2-rare':
@@ -89,11 +88,13 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
         ul = -0.5
         hr = 1.0
         ur = 0.5
+        x0 = 0.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
-    elif IC=='perturbation':
+    elif IC=='perturb':
         tf = 3.0
-        eps=0.1
+        eps = 0.1
+        x0 = 0.0
         state.q[depth,:] = 1.0 + eps*np.exp(-(xc-x0)**2/0.5)
         state.q[momentum,:] = 0.0
 
