@@ -15,6 +15,15 @@ rcParams['axes.titlesize'] = 12
 rcParams['axes.labelsize'] = 12
 
 #------------------------------------------------------------------------------
+def read(frame):
+    f = pyclaw.Solution()
+    if args.petsc:
+        f.read(frame, dir, read_aux=False, file_prefix='claw', 
+               file_format='petsc')
+    else:
+        f.read(frame, dir, read_aux=False)
+    return f
+#------------------------------------------------------------------------------
 # Data Reading
 
 # Defaults
@@ -27,39 +36,45 @@ parser.add_argument('-f', type=int, help='Frame number', default=frame)
 parser.add_argument('-d', help='Directory', default=dir)
 parser.add_argument('-petsc', help='Read PETSc output', action='store_true')
 args = parser.parse_args()
-frame, dir = args.f, args.d
+dir = args.d
 
-f = pyclaw.Solution()
-if args.petsc:
-    f.read(frame, dir, read_aux=False, file_prefix='claw', file_format='petsc')
-else:
-    f.read(frame, dir, read_aux=False)
+print('Dir   = ', dir)
 
-t  = f.state.t
+# Read first frame and make grid
+f = read(0)
 x  = f.state.grid.x.centers
 y  = f.state.grid.y.centers
-
 nx, ny = len(x), len(y)
 x, y = np.meshgrid(x, y, indexing="ij")
 
-# 2d plot data
-q  = f.state.q[0,:,:]
+levels = np.arange(0.05, 1.0, 0.1)
+
+for frame in range(1000):
+    try:
+        f = read(frame)
+    except:
+        print("End")
+        break
+
+    t  = f.state.t
+
+    # 2d plot data
+    q  = f.state.q[0,:,:]
+    #------------------------------------------------------------------------------
+    print('Frame, t = ', frame, t)
+    t = "{:.3f}".format(t)
+
+    plt.figure()
+    #plt.contourf(x,y,q,levels=50,cmap='jet')
+    plt.contour(x,y,q,levels=levels,linewidths=1)
+    plt.title('Contours of q \n')
+    plt.title('Time ='+str(t), loc='right')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.colorbar()
+    plt.axis('equal')
+    plt.show(block=False)
+    input("Press Enter to continue...")
+    plt.close()
+
 #------------------------------------------------------------------------------
-print('Dir   = ', dir)
-print('Frame = ', frame)
-print('Time  = ', t)
-t = "{:.3f}".format(t)
-
-plt.figure()
-plt.contourf(x,y,q,levels=50,cmap='jet',linewidths=1)
-plt.title('Contours of q \n')
-plt.title('Time ='+str(t), loc='right')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.colorbar()
-plt.axis('equal')
-plt.savefig('h.pdf')
-
-#------------------------------------------------------------------------------
-
-plt.show()
