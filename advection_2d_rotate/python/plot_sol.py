@@ -47,7 +47,14 @@ y  = f.state.grid.y.centers
 nx, ny = len(x), len(y)
 x, y = np.meshgrid(x, y, indexing="ij")
 
+# Contour levels to draw
 levels = np.arange(0.05, 1.0, 0.1)
+
+plt.figure(layout='tight')
+plt.title('Contours of q \n')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show(block=False)
 
 for frame in range(1000):
     try:
@@ -64,17 +71,12 @@ for frame in range(1000):
     print('Frame, t = ', frame, t)
     t = "{:.3f}".format(t)
 
-    plt.figure()
     #plt.contourf(x,y,q,levels=50,cmap='jet')
-    plt.contour(x,y,q,levels=levels,linewidths=1)
-    plt.title('Contours of q \n')
+    C = plt.contour(x,y,q,levels=levels,linewidths=1)
     plt.title('Time ='+str(t), loc='right')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.colorbar()
     plt.axis('equal')
-    plt.show(block=False)
+    plt.draw()
     input("Press Enter to continue...")
-    plt.close()
+    C.remove()
 
 #------------------------------------------------------------------------------
