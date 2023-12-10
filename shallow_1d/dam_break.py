@@ -20,7 +20,7 @@ import numpy as np
 from clawpack import riemann
 from clawpack.riemann.shallow_roe_with_efix_1D_constants import depth, momentum, num_eqn
 
-def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
+def setup(ic='dam-break',use_petsc=False,kernel_language='Fortran',
           outdir='./_output',solver_type='classic',
           riemann_solver='roe', disable_output=False):
 
@@ -64,7 +64,7 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
     
     xc = state.grid.x.centers
 
-    if IC=='dam-break':
+    if ic=='dam-break':
         tf = 2.0
         hl = 3.0
         ul = 0.0
@@ -73,7 +73,7 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
         x0 = 0.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
-    elif IC=='2-shock':
+    elif ic=='2-shock':
         tf = 2.0
         hl = 1.0
         ul = 1.0
@@ -82,7 +82,7 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
         x0 = 0.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
-    elif IC=='2-rare':
+    elif ic=='2-rare':
         tf = 3.0
         hl = 1.0
         ul = -0.5
@@ -91,7 +91,7 @@ def setup(IC='dam-break',use_petsc=False,kernel_language='Fortran',
         x0 = 0.0
         state.q[depth,:] = hl * (xc <= x0) + hr * (xc > x0)
         state.q[momentum,:] = hl*ul * (xc <= x0) + hr*ur * (xc > x0)
-    elif IC=='perturb':
+    elif ic=='perturb':
         tf = 3.0
         eps = 0.1
         x0 = 0.0
