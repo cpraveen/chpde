@@ -24,15 +24,18 @@ def read(frame):
         f.read(frame, dir, read_aux=False)
     return f
 #------------------------------------------------------------------------------
+def box():
+    x = [-1,1,1,-1,-1]
+    y = [-1, -1, 1, 1, -1]
+    plt.plot(x,y,'-k')
+#------------------------------------------------------------------------------
 # Data Reading
 
 # Defaults
-frame = 10
 dir = "_output"
 
 # Get arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', type=int, help='Frame number', default=frame)
 parser.add_argument('-d', help='Directory', default=dir)
 parser.add_argument('-petsc', help='Read PETSc output', action='store_true')
 args = parser.parse_args()
@@ -52,15 +55,16 @@ levels = np.arange(0.05, 1.0, 0.1)
 
 plt.figure(layout='tight')
 plt.title('Contours of q \n')
-plt.xlabel('x')
-plt.ylabel('y')
+plt.xlabel('x'); plt.ylabel('y')
+plt.box(False); plt.axis('off')
 plt.show(block=False)
 
 for frame in range(1000):
     try:
         f = read(frame)
     except:
-        print("End")
+        print("Reached end of frames")
+        input("Press Enter to exit")
         break
 
     t  = f.state.t
@@ -74,8 +78,7 @@ for frame in range(1000):
     #plt.contourf(x,y,q,levels=50,cmap='jet')
     C = plt.contour(x,y,q,levels=levels,linewidths=1)
     plt.title('Time ='+str(t), loc='right')
-    plt.axis('equal')
-    plt.draw()
+    box(); plt.axis('equal'); plt.draw()
     input("Press Enter to continue...")
     C.remove()
 
