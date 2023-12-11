@@ -15,9 +15,9 @@ rcParams['axes.titlesize'] = 12
 rcParams['axes.labelsize'] = 12
 
 #------------------------------------------------------------------------------
-def read(frame):
+def read(frame, dir, petsc):
     f = pyclaw.Solution()
-    if args.petsc:
+    if petsc:
         f.read(frame, dir, read_aux=False, file_prefix='claw', 
                file_format='petsc')
     else:
@@ -44,7 +44,7 @@ dir = args.d
 print('Dir   = ', dir)
 
 # Read first frame and make grid
-f = read(0)
+f = read(0, dir, args.petsc)
 x  = f.state.grid.x.centers
 y  = f.state.grid.y.centers
 nx, ny = len(x), len(y)
@@ -61,7 +61,7 @@ plt.show(block=False)
 
 for frame in range(1000):
     try:
-        f = read(frame)
+        f = read(frame, dir, args.petsc)
     except:
         print("Reached end of frames")
         input("Press Enter to exit")
