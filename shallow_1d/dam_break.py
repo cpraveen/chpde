@@ -97,6 +97,24 @@ def setup(ic='dam-break',use_petsc=False,kernel_language='Fortran',
         x0 = 0.0
         state.q[depth,:] = 1.0 + eps*np.exp(-(xc-x0)**2/0.5)
         state.q[momentum,:] = 0.0
+    elif ic=='collide': # Two 2-shocks collide
+        grav = state.problem_data['grav']
+        # data in middle state:
+        h2, u2 = 2.0, 0.0
+        hu2 = h2*u2
+        # data in left state:
+        h1 = 4.0
+        u1 = np.sqrt(0.5*grav*(h2/h1 - h1/h2) * (h2-h1))
+        hu1 = h1*u1
+        # data in right state:
+        h3 = 0.8
+        u3 = -np.sqrt(0.5*grav*(h2/h3 - h3/h2) * (h2-h3))
+        hu3 = h3*u3
+        # Initial jump locations
+        x1, x2 = -4.0, -2.5
+        tf = 4.0
+        state.q[depth,:] = (xc<x1)*h1 + (xc>=x1)*(xc<=x2)*h2 + (xc>x2)*h3
+        state.q[momentum,:] = (xc<x1)*hu1 + (xc>=x1)*(xc<=x2)*hu2 + (xc>x2)*hu3
 
     claw = pyclaw.Controller()
     claw.keep_copy = True
