@@ -32,7 +32,8 @@ def mapc2p_nonunif(xc):
     return xp
 
 
-def setup(nx=100, kernel_language='Fortran', use_petsc=False, solver_type='classic', weno_order=5,
+def setup(nx=100, kernel_language='Fortran', use_petsc=False, 
+          solver_type='classic', weno_order=5,
           time_integrator='SSP104', outdir='./_output'):
 
     if use_petsc:
@@ -51,10 +52,10 @@ def setup(nx=100, kernel_language='Fortran', use_petsc=False, solver_type='class
     else: raise Exception('Unrecognized value of solver_type.')
 
     solver.kernel_language = kernel_language
-    solver.order = 1 
-    solver.limiters = pyclaw.tvd.minmod
-    solver.num_eqn=1
-    solver.num_waves=1
+    solver.order = 2
+    solver.limiters = 0
+    solver.num_eqn = 1
+    solver.num_waves = 1
     solver.bc_lower[0] = pyclaw.BC.periodic
     solver.bc_upper[0] = pyclaw.BC.periodic
     solver.aux_bc_lower[0] = pyclaw.BC.periodic
@@ -63,20 +64,20 @@ def setup(nx=100, kernel_language='Fortran', use_petsc=False, solver_type='class
     x = pyclaw.Dimension(-0.5,0.5,nx,name='x')
     domain = pyclaw.Domain(x)
     state = pyclaw.State(domain,1,num_aux=1)
-    state.problem_data['u'] = 1.  # Advection velocity
+    state.problem_data['u'] = 1.0  # Advection velocity
     state.index_capa = 0
 
     xc = state.grid.x.centers
-    grid1d = state.grid
+    grid = state.grid
 
     # mapping to nonunif grid
-    grid1d.mapc2p = mapc2p_nonunif
+    grid.mapc2p = mapc2p_nonunif
     state.aux = np.zeros((1,nx)) # capacity array dx_p/dx_c
-    state.aux[0,:] = np.diff(grid1d.p_nodes)/np.diff(state.grid.x.nodes)
+    state.aux[0,:] = np.diff(grid.p_nodes)/np.diff(grid.x.nodes)
 
     # Initial data
     beta = 100; gamma = 0; x0 = 0.0
-    state.q[0,:] = np.exp(-beta * (grid1d.p_centers-x0)**2) * np.cos(gamma * (grid1d.p_centers - x0))
+    state.q[0,:] = np.exp(-beta * (grid.p_centers-x0)**2) * np.cos(gamma * (grid.p_centers - x0))
 
     claw = pyclaw.Controller()
     claw.keep_copy = True
