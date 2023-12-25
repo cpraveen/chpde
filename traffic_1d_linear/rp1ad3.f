@@ -1,8 +1,6 @@
-c
-c
 c =========================================================
-      subroutine rp1(maxmx,meqn,mwaves,mbc,mx,ql,qr,auxl,auxr,
-     &		 wave,s,amdq,apdq)
+      subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,
+     &               wave,s,amdq,apdq)
 c =========================================================
 c
 c     # solve Riemann problems for the 1D advection equation q_t + (u*q)_x = 0.
@@ -26,31 +24,30 @@ c     # From the basic clawpack routine step1, rp is called with ql = qr = q.
 c
 c
       implicit double precision (a-h,o-z)
-      dimension   ql(1-mbc:maxmx+mbc, meqn)
-      dimension   qr(1-mbc:maxmx+mbc, meqn)
-      dimension auxl(1-mbc:maxmx+mbc, 1)
-      dimension auxr(1-mbc:maxmx+mbc, 1)
-      dimension    s(1-mbc:maxmx+mbc, mwaves)
-      dimension wave(1-mbc:maxmx+mbc, meqn, mwaves)
-      dimension amdq(1-mbc:maxmx+mbc, meqn)
-      dimension apdq(1-mbc:maxmx+mbc, meqn)
+      dimension   ql(meqn,1-mbc:maxmx+mbc)
+      dimension   qr(meqn,1-mbc:maxmx+mbc)
+      dimension auxl(maux,1-mbc:maxmx+mbc)
+      dimension auxr(maux,1-mbc:maxmx+mbc)
+      dimension    s(mwaves,1-mbc:maxmx+mbc)
+      dimension wave(meqn,mwaves,1-mbc:maxmx+mbc)
+      dimension amdq(meqn,1-mbc:maxmx+mbc)
+      dimension apdq(meqn,1-mbc:maxmx+mbc)
 c
 c
 c     # set fim1 = f(q_{i-1}) at left boundary for flux differencing below:
       i = 1-mbc
-      fim1 = 0.5d0*(qr(i,1) + ql(i,1)) *
-     &            (dmin1(auxl(i+1,1),0.d0)
-     &             + dmax1(auxl(i,1),0.d0))
+      fim1 = 0.5d0*(qr(1,i) + ql(1,i)) *
+     &            (dmin1(auxl(1,i+1),0.0d0) + dmax1(auxl(1,i),0.0d0))
 c
 c
 c
-      do 30 i=2-mbc,mx+mbc
+      do i=2-mbc,mx+mbc
 c
 c        # Compute the wave and speed
 c
-	 u = auxl(i,1)
-         wave(i,1,1) = ql(i,1) - qr(i-1,1)
-         s(i,1) = u
+         u = auxl(1,i)
+         wave(1,1,i) = ql(1,i) - qr(1,i-1)
+         s(1,i) = u
 c
 c
 c        # conservative form
@@ -60,23 +57,23 @@ c        # conservative equation  q_t + (u*q)_x = 0
 c
 c        # compute the flux at the interface between cells i-1 and i:
          if (u.gt.0.d0) then
-               f0 = u*qr(i-1,1)
-             else
-               f0 = u*ql(i,1)
-             endif
+            f0 = u*qr(1,i-1)
+         else
+            f0 = u*ql(1,i)
+         endif
 c
 c        # compute a value for the flux in cell i:
 c        # note that we have velocities only at the interfaces
-         fi = 0.5d0*(ql(i,1) + qr(i,1)) *
-     &             (dmin1(auxl(i+1,1),0.d0) + dmax1(u,0.d0))
+         fi = 0.5d0*(ql(1,i) + qr(1,i)) *
+     &             (dmin1(auxl(1,i+1),0.0d0) + dmax1(u,0.0d0))
 c
 c        # flux differences:
-         amdq(i,1) = f0 - fim1
-         apdq(i,1) = fi - f0
+         amdq(1,i) = f0 - fim1
+         apdq(1,i) = fi - f0
 c
          fim1 = fi
 
-   30   continue
+      enddo
 c
       return
       end
