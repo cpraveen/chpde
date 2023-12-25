@@ -39,7 +39,14 @@ c
          qi  = ql(1,i)
          qim = qr(1,i-1)
 c
-         if (ui .gt. 0.0d0) then
+         if (uim .lt. 0.0d0 .and. ui .gt. 0.0d0) then
+            wave(1,1,i) = qi - qim
+            s(1,i) = 0.0d0
+            amdq(1,i) = 0.0d0 - uim * qim
+            apdq(1,i) = ui * qi - 0.0d0
+         else if (uim .gt. 0.0d0 .and. ui .lt. 0.0d0) then
+            stop "uim > 0 and ui < 0 not implemented"
+         else if (ui .gt. 0.0d0) then
             qstar = uim*qim/ui
             wave(1,1,i) = qi - qstar
             s(1,i) = ui
