@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 r"""
-One-dimensional acoustics
+One-dimensional acoustics: Ex 7.3
 =========================
 
 Solve the (linear) acoustics equations:
@@ -14,12 +14,10 @@ Solve the (linear) acoustics equations:
 Here p is the pressure, u is the velocity, K is the bulk modulus,
 and :math:`\rho` is the density.
 
-The initial condition is a Gaussian and the boundary conditions are periodic.
-The final solution is identical to the initial data because both waves have
-crossed the domain exactly once.
+The initial condition is a cosine wave in pressure and the boundary conditions are solid walls. The solution develops a standing wave.
 """
 from __future__ import absolute_import
-from numpy import sqrt, exp, cos
+from numpy import sqrt, cos, pi
 from clawpack import riemann
 
 
@@ -55,13 +53,13 @@ def setup(use_petsc=False, kernel_language='Fortran', solver_type='classic',
 
     solver.kernel_language = kernel_language
 
-    x = pyclaw.Dimension(0.0, 1.0, 100, name='x')
+    x = pyclaw.Dimension(0.0, 1.0, 200, name='x')
     domain = pyclaw.Domain(x)
     num_eqn = 2
     state = pyclaw.State(domain, num_eqn)
 
-    solver.bc_lower[0] = pyclaw.BC.periodic
-    solver.bc_upper[0] = pyclaw.BC.periodic
+    solver.bc_lower[0] = pyclaw.BC.wall
+    solver.bc_upper[0] = pyclaw.BC.wall
 
     rho = 1.0   # Material density
     bulk = 1.0  # Material bulk modulus
@@ -72,10 +70,7 @@ def setup(use_petsc=False, kernel_language='Fortran', solver_type='classic',
     state.problem_data['cc'] = sqrt(bulk/rho)   # Sound speed
 
     xc = domain.grid.x.centers
-    beta = 100
-    gamma = 0
-    x0 = 0.75
-    state.q[0, :] = exp(-beta * (xc-x0)**2) * cos(gamma * (xc - x0))
+    state.q[0, :] = cos(2.0 * pi * xc)
     state.q[1, :] = 0.0
 
     solver.dt_initial = domain.grid.delta[0] / state.problem_data['cc'] * 0.1
@@ -86,12 +81,12 @@ def setup(use_petsc=False, kernel_language='Fortran', solver_type='classic',
     claw.outdir = outdir
     claw.output_style = output_style
     if output_style == 1:
-        claw.tfinal = 1.0
-        claw.num_output_times = 10
+        claw.tfinal = 2.0
+        claw.num_output_times = 20
     elif output_style == 3:
         claw.nstep = 1
         claw.num_output_times = 1
-    #claw.keep_copy = True
+    claw.keep_copy = True
     if disable_output:
         claw.output_format = None
     claw.setplot = setplot
@@ -109,11 +104,12 @@ def setplot(plotdata):
 
     # Figure for pressure
     plotfigure = plotdata.new_plotfigure(name='Pressure', figno=1)
+    plotfigure.kwargs = {'layout': 'tight'}
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(211)'
-    plotaxes.ylimits = [-0.2, 1.0]
+    plotaxes.ylimits = [-1.1, 1.1]
     plotaxes.title = 'Pressure'
 
     # Set up for item on these axes:
@@ -127,7 +123,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(212)'
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [-0.5, 1.1]
+    plotaxes.ylimits = [-1.1, 1.1]
     plotaxes.title = 'Velocity'
 
     # Set up for item on these axes:
