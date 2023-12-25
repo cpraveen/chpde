@@ -8,8 +8,10 @@ c
 c
       call opendatafile(7,'setprob.data')
 
-      read(7,*) u1,u2
-      read(7,*) rho1,rho2
+      read(7,*) u1
+      read(7,*) u2
+      read(7,*) rho1
+      read(7,*) rho2
 
       return
       end
