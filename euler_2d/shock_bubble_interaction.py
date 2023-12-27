@@ -38,11 +38,11 @@ x0=0.5; y0=0.0; r0=0.2
 
 def ycirc(x,ymin,ymax):
     if ((x-x0)**2)<(r0**2):
-        return max(min(y0 + np.sqrt(r0**2-(x-x0)**2),ymax) - ymin,0.)
+        return max(min(y0 + np.sqrt(r0**2-(x-x0)**2),ymax) - ymin,0.0)
     else:
         return 0
 
-def qinit(state,rhoin=0.1,pinf=5.):
+def qinit(state,rhoin=0.1,pinf=5.0):
     from scipy import integrate
 
     gamma1 = gamma - 1.0
