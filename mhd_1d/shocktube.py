@@ -92,6 +92,7 @@ def setplot(plotdata):
     plotdata.clearfigures()  # clear any old figures,axes,items data
 
     plotfigure = plotdata.new_plotfigure(name='', figno=0)
+    plotfigure.kwargs = {'layout': 'tight'}
 
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(211)'
@@ -99,7 +100,7 @@ def setplot(plotdata):
 
     plotitem = plotaxes.new_plotitem(plot_type='1d')
     plotitem.plot_var = B_2
-    plotitem.kwargs = {'linewidth': 3}
+    plotitem.kwargs = {'linewidth': 2}
 
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.axescmd = 'subplot(212)'
@@ -107,7 +108,7 @@ def setplot(plotdata):
 
     plotitem = plotaxes.new_plotitem(plot_type='1d')
     plotitem.plot_var = B_3
-    plotitem.kwargs = {'linewidth': 3}
+    plotitem.kwargs = {'linewidth': 2}
 
     return plotdata
 
