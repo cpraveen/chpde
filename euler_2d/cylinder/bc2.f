@@ -25,6 +25,7 @@ c     #   (1-ibc, j)   for ibc = 1,mbc,  j = 1-mbc, my+mbc
 c     #   (mx+ibc, j)  for ibc = 1,mbc,  j = 1-mbc, my+mbc
 c
       implicit double precision (a-h,o-z)
+      include 'param.h'
       dimension q(meqn,1-mbc:mx+mbc,1-mbc:my+mbc)
       dimension aux(maux,1-mbc:mx+mbc,1-mbc:my+mbc)
       dimension mthbc(4)
@@ -89,8 +90,13 @@ c-------------------------------------------------------
 c
   200 continue
 c     # user-specified boundary conditions go here in place of error output
-      write(6,*) '*** ERROR *** mthbc(2)=0 and no BCs specified in bc2'
-      stop
+      do j = 1-mbc, my+mbc
+         do ibc=1,mbc
+            do m=1,meqn
+               q(m,mx+ibc,j) = qinf(m)
+            enddo
+         enddo
+      enddo
       go to 299
 
   210 continue

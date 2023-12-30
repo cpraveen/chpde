@@ -123,7 +123,7 @@ def setrun(claw_pkg='classic'):
  
     elif clawdata.output_style == 3:
         # Output every step_interval timesteps over total_steps timesteps:
-        clawdata.output_step_interval = 2
+        clawdata.output_step_interval = 10
         clawdata.total_steps = 4
         clawdata.output_t0 = True  # output at initial (or restart) time?
         

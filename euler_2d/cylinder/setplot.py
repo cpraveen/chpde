@@ -35,24 +35,6 @@ def setplot(plotdata=None):
         v1 = q[1,:,:]/h
         return v1
 
-    # Compute enstrophy
-    def enstrophy(current_data):
-        q  = current_data.q
-        h  = q[0,:,:]
-        v1 = q[1,:,:]/h
-        v2 = q[2,:,:]/h
-        E11= q[3,:,:]
-        E12= q[4,:,:]
-        E22= q[5,:,:]
-        R11= 2*E11 - h * v1 * v1
-        R12= 2*E12 - h * v1 * v2
-        R22= 2*E22 - h * v2 * v2
-        P11= R11 / h
-        P12= R12 / h
-        P22= R22 / h
-        w  = np.log10((P11*P22 - P12*P12) / h**2)
-        return w
-
     # Figure for pcolor of average depth
     # -------------------
 
@@ -60,8 +42,8 @@ def setplot(plotdata=None):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = '[-5,5]'
-    plotaxes.ylimits = '[-5,5]'
+    plotaxes.xlimits = [-5,5]
+    plotaxes.ylimits = [-5,5]
     plotaxes.title = 'h'
     plotaxes.scaled = True      # so aspect ratio is 1
 
@@ -80,34 +62,14 @@ def setplot(plotdata=None):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = '[-5,5]'
-    plotaxes.ylimits = '[-5,5]'
+    plotaxes.xlimits = [-5,5]
+    plotaxes.ylimits = [-5,5]
     plotaxes.title = 'v1'
     plotaxes.scaled = True      # so aspect ratio is 1
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = v1
-    plotitem.pcolor_cmap = colormaps.blue_yellow_red
-    #plotitem.pcolor_cmin = 0.0
-    #plotitem.pcolor_cmax = 1.0
-    plotitem.add_colorbar = True
-
-    # Figure for pcolor of log(det(P)/h^2)
-    # -------------------
-
-    plotfigure = plotdata.new_plotfigure(name='Pcolor_ens', figno=2)
-
-    # Set up for axes in this figure:
-    plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = '[-5,5]'
-    plotaxes.ylimits = '[-5,5]'
-    plotaxes.title = 'enstrophy'
-    plotaxes.scaled = True      # so aspect ratio is 1
-
-    # Set up for item on these axes:
-    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
-    plotitem.plot_var = enstrophy
     plotitem.pcolor_cmap = colormaps.blue_yellow_red
     #plotitem.pcolor_cmin = 0.0
     #plotitem.pcolor_cmax = 1.0

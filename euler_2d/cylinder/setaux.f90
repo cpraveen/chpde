@@ -28,8 +28,8 @@ subroutine setaux(mbc,mx,my,xlower,ylower,dxc,dyc,maux,aux)
 
    print*,'Setting bottom profile in aux ...'
 
-   do j=1,my
-      do i=1,mx
+   do j=1-mbc,my+mbc
+      do i=1-mbc,mx+mbc
          ! computational points (xc,yc) are mapped to physical
          ! coordinates (xp,yp) by mapc2p:
  
@@ -56,14 +56,14 @@ subroutine setaux(mbc,mx,my,xlower,ylower,dxc,dyc,maux,aux)
          ! compute normals to left and bottom side:
          ax =  (ypcorn(2) - ypcorn(1))
          ay = -(xpcorn(2) - xpcorn(1))
-         anorm = sqrt(ax*ax + ay*ay)
+         anorm = dsqrt(ax*ax + ay*ay)
          aux(1,i,j) = ax/anorm
          aux(2,i,j) = ay/anorm
          aux(3,i,j) = anorm/dyc
 
          bx = -(ypcorn(4) - ypcorn(1))
          by =  (xpcorn(4) - xpcorn(1))
-         bnorm = sqrt(bx*bx + by*by)
+         bnorm = dsqrt(bx*bx + by*by)
          aux(4,i,j) = bx/bnorm
          aux(5,i,j) = by/bnorm
          aux(6,i,j) = bnorm/dxc
