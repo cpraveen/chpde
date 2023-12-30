@@ -8,6 +8,7 @@ function setplot is called to set the plot parameters.
 """ 
 from __future__ import absolute_import
 import numpy as np
+from mapc2p import *
 
 #--------------------------
 def setplot(plotdata=None):
@@ -27,6 +28,8 @@ def setplot(plotdata=None):
         plotdata = ClawPlotData()
 
     plotdata.clearfigures()  # clear any old figures,axes,items data
+
+    plotdata.mapc2p = mapc2p
 
     # Compute x velocity
     def v1(current_data):
@@ -54,6 +57,7 @@ def setplot(plotdata=None):
     #plotitem.pcolor_cmin = 0.0
     #plotitem.pcolor_cmax = 0.02
     plotitem.add_colorbar = True
+    plotitem.MappedGrid = True
 
     # Figure for pcolor of v1 
     # -------------------
@@ -74,6 +78,7 @@ def setplot(plotdata=None):
     #plotitem.pcolor_cmin = 0.0
     #plotitem.pcolor_cmax = 1.0
     plotitem.add_colorbar = True
+    plotitem.MappedGrid = True
 
     # Parameters used only when creating html and/or latex hardcopy
     # e.g., via clawpack.visclaw.frametools.printframes:

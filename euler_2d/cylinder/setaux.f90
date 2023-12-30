@@ -26,8 +26,6 @@ subroutine setaux(mbc,mx,my,xlower,ylower,dxc,dyc,maux,aux)
    real(kind=8) :: xccorn(5),yccorn(5),xpcorn(5),ypcorn(5)
    real(kind=8) :: ax, ay, bx, by, anorm, bnorm, area
 
-   print*,'Setting bottom profile in aux ...'
-
    do j=1-mbc,my+mbc
       do i=1-mbc,mx+mbc
          ! computational points (xc,yc) are mapped to physical

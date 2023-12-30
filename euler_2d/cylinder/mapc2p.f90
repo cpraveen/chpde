@@ -9,7 +9,7 @@ subroutine mapc2p(xc, yc, xp, yp)
    r     = rin + xc * (rout - rin)
    theta = 2.0d0 * M_PI * yc
 
-   xp = r * cos(theta)
-   yp = r * sin(theta)
+   xp = r * dcos(theta)
+   yp = r * dsin(theta)
 
 end subroutine mapc2p
