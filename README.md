@@ -4,6 +4,8 @@ These codes are based on Clawpack and the book
 
 R. J. LeVeque, Finite volume methods for hyperbolic problems, CUP.
 
+Most of the codes have been taken from various Clawpack repositories and modified slightly in some cases.
+
 To install Clawpack, see the instructions here
 
 https://cpraveen.github.io/comp/clawpack.html
