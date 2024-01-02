@@ -10,6 +10,8 @@ from __future__ import absolute_import
 import numpy as np
 from mapc2p import *
 
+gamma = 1.4
+
 #--------------------------
 def setplot(plotdata=None):
 #--------------------------
@@ -32,22 +34,30 @@ def setplot(plotdata=None):
     plotdata.mapc2p = mapc2p
 
     # Compute x velocity
+    def pressure(current_data):
+        q  = current_data.q
+        rho  = q[0,:,:]
+        v1 = q[1,:,:]/rho
+        v2 = q[2,:,:]/rho
+        return (gamma-1.0)*(q[3,:,:] - 0.5 * rho * (v1**2 + v2**2))
+
+    # Compute x velocity
     def v1(current_data):
         q  = current_data.q
-        h  = q[0,:,:]
-        v1 = q[1,:,:]/h
+        rho  = q[0,:,:]
+        v1 = q[1,:,:]/rho
         return v1
 
     # Figure for pcolor of average depth
     # -------------------
 
-    plotfigure = plotdata.new_plotfigure(name='Pcolor_h', figno=0)
+    plotfigure = plotdata.new_plotfigure(name='Density', figno=0)
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.xlimits = [-5,5]
     plotaxes.ylimits = [-5,5]
-    plotaxes.title = 'h'
+    plotaxes.title = 'Density'
     plotaxes.scaled = True      # so aspect ratio is 1
 
     # Set up for item on these axes:
@@ -62,7 +72,7 @@ def setplot(plotdata=None):
     # Figure for pcolor of v1 
     # -------------------
 
-    plotfigure = plotdata.new_plotfigure(name='Pcolor_v1', figno=1)
+    plotfigure = plotdata.new_plotfigure(name='xvelocity', figno=1)
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
@@ -74,6 +84,27 @@ def setplot(plotdata=None):
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = v1
+    plotitem.pcolor_cmap = colormaps.blue_yellow_red
+    #plotitem.pcolor_cmin = 0.0
+    #plotitem.pcolor_cmax = 1.0
+    plotitem.add_colorbar = True
+    plotitem.MappedGrid = True
+
+    # Figure for pcolor of Pressure
+    # -------------------
+
+    plotfigure = plotdata.new_plotfigure(name='Pressure', figno=2)
+
+    # Set up for axes in this figure:
+    plotaxes = plotfigure.new_plotaxes()
+    plotaxes.xlimits = [-5,5]
+    plotaxes.ylimits = [-5,5]
+    plotaxes.title = 'Pressure'
+    plotaxes.scaled = True      # so aspect ratio is 1
+
+    # Set up for item on these axes:
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.plot_var = pressure
     plotitem.pcolor_cmap = colormaps.blue_yellow_red
     #plotitem.pcolor_cmin = 0.0
     #plotitem.pcolor_cmax = 1.0

@@ -3,10 +3,9 @@ subroutine setprob
    implicit none
    include 'param.h'
 
-   M_PI = 4.0d0 * atan(1.0d0)
+   M_PI = 4.0d0 * datan(1.0d0)
 
    gamma = 1.4d0
-   gamma1 = gamma - 1.0d0
 
    machinf = 0.1d0
 

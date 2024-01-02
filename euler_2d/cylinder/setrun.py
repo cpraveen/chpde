@@ -107,7 +107,7 @@ def setrun(claw_pkg='classic'):
     # Specify at what times the results should be written to fort.q files.
     # Note that the time integration stops after the final output time.
  
-    clawdata.output_style = 1
+    clawdata.output_style = 3
  
     if clawdata.output_style==1:
         # Output ntimes frames at equally spaced times up to tfinal:
@@ -124,7 +124,7 @@ def setrun(claw_pkg='classic'):
     elif clawdata.output_style == 3:
         # Output every step_interval timesteps over total_steps timesteps:
         clawdata.output_step_interval = 10
-        clawdata.total_steps = 4
+        clawdata.total_steps = 100
         clawdata.output_t0 = True  # output at initial (or restart) time?
         
 

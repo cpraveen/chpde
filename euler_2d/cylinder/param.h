@@ -4,8 +4,8 @@
       double precision rin, rout
       common /geometry/  rin, rout
 
-      double precision machinf, rhoinf, uinf, vinf, pinf, qinf(4)
+      double precision qinf(4), machinf, rhoinf, uinf, vinf, pinf
       common /freestream/ qinf, machinf, rhoinf, uinf, vinf, pinf
 
-      double precision gamma, gamma1
-      common /cparam/ gamma, gamma1
+      double precision gamma
+      common /cparam/ gamma

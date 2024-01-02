@@ -50,15 +50,15 @@ EXCLUDE_SOURCES = \
 MODULES = \
 
 SOURCES = \
+  $(CLAW)/riemann/src/rpn2_euler_mapgrid.f90 \
+  $(CLAW)/riemann/src/rpt2_euler_mapgrid.f90 \
+  $(CLAW)/riemann/src/euler_roe_solver_mapgrid.f90 \
+  $(CLAW)/riemann/src/getquadinfo_mapgrid.f90 \
   qinit.f90 \
   setprob.f90 \
   setaux.f90 \
   mapc2p.f90 \
-  bc2.f \
-  $(CLAW)/riemann/src/rpn2_euler_mapgrid.f90 \
-  $(CLAW)/riemann/src/rpt2_euler_mapgrid.f90 \
-  $(CLAW)/riemann/src/euler_roe_solver_mapgrid.f90 \
-  $(CLAW)/riemann/src/getquadinfo_mapgrid.f90
+  bc2.f
 
 #-------------------------------------------------------------------
 # Include Makefile containing standard definitions and make options:
