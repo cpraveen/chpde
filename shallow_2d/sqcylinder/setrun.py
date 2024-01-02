@@ -60,14 +60,14 @@ def setrun(claw_pkg='classic'):
     clawdata.num_dim = num_dim
     
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = 1.000000e+00          # xlower
-    clawdata.upper[0] = 5.000000e+00          # xupper
+    clawdata.lower[0] = 0.000000e+00          # xlower
+    clawdata.upper[0] = 1.000000e+00          # xupper
     clawdata.lower[1] = 0.000000e+00          # ylower
     clawdata.upper[1] = 2.0 * np.pi           # yupper
     
     # Number of grid cells:
     clawdata.num_cells[0] = 100      # mx
-    clawdata.num_cells[1] = 400      # my
+    clawdata.num_cells[1] = 416      # my
     
 
     # ---------------
@@ -152,7 +152,7 @@ def setrun(claw_pkg='classic'):
     
     # Initial time step for variable dt.  
     # (If dt_variable==0 then dt=dt_initial for all steps)
-    clawdata.dt_initial = 1e-1
+    clawdata.dt_initial = 1.0e-1
     
     # Max time step to be allowed if variable dt used:
     clawdata.dt_max = 1.000000e+99
