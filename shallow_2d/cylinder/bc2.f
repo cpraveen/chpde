@@ -22,10 +22,10 @@ c     #                  negating the normal component of the velocity.
 c     #                  On a quadrilateral grid we know the normal to each
 c     #                  edge and assume this is stored in the aux array:
 c
-c     #    aux(i,j,1)  = ax
-c     #    aux(i,j,2)  = ay   where (ax,ay) is unit normal to left face
-c     #    aux(i,j,4)  = bx
-c     #    aux(i,j,5)  = by   where (bx,by) is unit normal to bottom face
+c     #    aux(1,i,j)  = ax
+c     #    aux(2,i,j)  = ay   where (ax,ay) is unit normal to left face
+c     #    aux(4,i,j)  = bx
+c     #    aux(5,i,j)  = by   where (bx,by) is unit normal to bottom face
 c     ------------------------------------------------
 c
 c     # Extend the data from the interior cells (1:mx, 1:my)

@@ -56,7 +56,7 @@
   
       COMMON /sw/ g
 ! 
-      DATA efix/.true./
+      DATA efix /.true./
 ! 
 ! 
 !     # rotate the velocities q(2) and q(3) so that it is aligned with g

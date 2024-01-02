@@ -50,6 +50,7 @@ EXCLUDE_SOURCES = \
 MODULES = \
 
 SOURCES = \
+  $(CLAW)/classic/src/2d/cellave.f \
   fdisc.f \
   qinit.f \
   setprob.f \
@@ -57,8 +58,7 @@ SOURCES = \
   mapc2p.f \
   bc2.f \
   rpn2swq.f \
-  rpt2swq.f \
-  $(CLAW)/classic/src/2d/cellave.f
+  rpt2swq.f
 
 #-------------------------------------------------------------------
 # Include Makefile containing standard definitions and make options:
