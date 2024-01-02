@@ -122,17 +122,17 @@
 !        # Compute the waves.
 ! 
          wave(1,1,i)=a1
-         wave(1,2,i)=alf(i)*a1*(u(i)-a(i))-beta(i)*a1*v(i)
-         wave(1,3,i)=beta(i)*a1*(u(i)-a(i))+alf(i)*a1*v(i)
+         wave(2,1,i)=alf(i)*a1*(u(i)-a(i))-beta(i)*a1*v(i)
+         wave(3,1,i)=beta(i)*a1*(u(i)-a(i))+alf(i)*a1*v(i)
          s(1,i)=(u(i)-a(i))*auxl(ilenrat,i)
 ! 
-         wave(2,1,i)=0.0d0
+         wave(1,2,i)=0.0d0
          wave(2,2,i)=-beta(i)*a2
-         wave(2,3,i)=alf(i)*a2
+         wave(3,2,i)=alf(i)*a2
          s(2,i)=u(i)*auxl(ilenrat,i)
 ! 
-         wave(3,1,i)=a3
-         wave(3,2,i)=alf(i)*a3*(u(i)+a(i))-beta(i)*a3*v(i)
+         wave(1,3,i)=a3
+         wave(2,3,i)=alf(i)*a3*(u(i)+a(i))-beta(i)*a3*v(i)
          wave(3,3,i)=beta(i)*a3*(u(i)+a(i))+alf(i)*a3*v(i)
          s(3,i)=(u(i)+a(i))*auxl(ilenrat,i)
    20 CONTINUE
