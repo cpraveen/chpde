@@ -36,9 +36,9 @@ def setrun(claw_pkg='classic'):
     # Problem-specific parameters to be written to setprob.data:
     #------------------------------------------------------------------
     probdata = rundata.new_UserData(name='probdata',fname='setprob.data')
-    probdata.add_param('rho',   1.0,  'density of medium')
-    probdata.add_param('K',    0.25,  'bulk modulus')
-    probdata.add_param('beta', 200.,  'Gaussian width parameter')
+    probdata.add_param('rho',    1.0,  'density of medium')
+    probdata.add_param('K',     0.25,  'bulk modulus')
+    probdata.add_param('beta', 200.0,  'Gaussian width parameter')
     
     #------------------------------------------------------------------
     # Standard Clawpack parameters to be written to claw.data:
@@ -56,7 +56,7 @@ def setrun(claw_pkg='classic'):
     
     # Lower and upper edge of computational domain:
     clawdata.lower[0] = -1.000000e+00          # xlower
-    clawdata.upper[0] = 1.000000e+00          # xupper
+    clawdata.upper[0] =  1.000000e+00          # xupper
     
     # Number of grid cells:
     clawdata.num_cells[0] = 800      # mx
@@ -138,8 +138,6 @@ def setrun(claw_pkg='classic'):
     #   (E.g. verbosity == 2 means print only on levels 1 and 2.)
     clawdata.verbosity = 0
     
-    
-
     # --------------
     # Time stepping:
     # --------------
@@ -163,14 +161,12 @@ def setrun(claw_pkg='classic'):
     # Maximum number of time steps to allow between output times:
     clawdata.steps_max = 5000
 
-
     # ------------------
     # Method to be used:
     # ------------------
 
     # Order of accuracy:  1 => Godunov,  2 => Lax-Wendroff plus limiters
     clawdata.order = 2
-    
     
     # Number of waves in the Riemann solution:
     clawdata.num_waves = 2

@@ -16,10 +16,10 @@ c     # comment lines starting with #:
 
 
 c     # density:
-      read(7,*) rho
+      read(iunit,*) rho
 
 c     # bulk modulus:
-      read(7,*) bulk
+      read(iunit,*) bulk
 
 c     # sound speed:
       cc = dsqrt(bulk/rho)
@@ -28,7 +28,9 @@ c     # impedance:
       zz = cc*rho
 
 c     # beta for initial conditions:
-      read(7,*) beta
+      read(iunit,*) beta
+
+      close(iunit)
 
       return
       end
