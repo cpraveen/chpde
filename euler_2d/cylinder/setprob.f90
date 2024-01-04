@@ -9,9 +9,6 @@ subroutine setprob
 
    machinf = 0.1d0
 
-   rin = 1.0d0
-   rout = 50.0d0 * rin
-
    rhoinf = 1.0d0
    uinf = 1.0d0
    vinf = 0.0d0

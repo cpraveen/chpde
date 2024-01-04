@@ -9,6 +9,7 @@ that will be read in by the Fortran code.
 from __future__ import absolute_import
 import os
 import numpy as np
+from mapc2p import *
 
 #------------------------------
 def setrun(claw_pkg='classic'):
@@ -65,9 +66,13 @@ def setrun(claw_pkg='classic'):
     clawdata.lower[1] = 0.000000e+00          # ylower
     clawdata.upper[1] = 1.000000e+00          # yupper
     
+    my = 100
+    mx = (my/(2*np.pi)) * np.log(rout/rin)
+    mx = int(mx) - 1
+
     # Number of grid cells:
-    clawdata.num_cells[0] = 100      # mx
-    clawdata.num_cells[1] = 100      # my
+    clawdata.num_cells[0] = mx # along radial direction
+    clawdata.num_cells[1] = my # along angular direction
     
 
     # ---------------
