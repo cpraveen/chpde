@@ -68,7 +68,7 @@ def setplot(plotdata):
 
     # Figure for q[0]
     plotfigure = plotdata.new_plotfigure(name='Acoustics', figno=1)
-    plotfigure.kwargs = {'figsize' : [12, 12]}
+    plotfigure.kwargs = {'layout' : 'tight'}
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
@@ -80,7 +80,7 @@ def setplot(plotdata):
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
     plotitem.plot_var = 0
-    plotitem.plotstyle = '-o'
+    plotitem.plotstyle = '-'
     plotitem.color = 'b'
     plotitem.show = True       # show on plot?
     plotitem.kwargs = {'linewidth': 2, 'markersize': 4}
@@ -95,7 +95,7 @@ def setplot(plotdata):
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(plot_type='1d_plot')
     plotitem.plot_var = 1
-    plotitem.plotstyle = '-o'
+    plotitem.plotstyle = '-'
     plotitem.color = 'r'
     plotitem.show = True       # show on plot?
     plotitem.kwargs = {'linewidth': 2, 'markersize': 4}
