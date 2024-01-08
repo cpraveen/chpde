@@ -109,6 +109,7 @@ def setplot(plotdata):
 
     # Figure for pressure
     plotfigure = plotdata.new_plotfigure(name='Pressure', figno=1)
+    plotfigure.kwargs = {'layout': 'tight'}
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
