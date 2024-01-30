@@ -16,6 +16,7 @@ The initial condition is a Gaussian and the boundary conditions are periodic.
 """
 from __future__ import absolute_import
 import numpy as np
+import shutil
 from clawpack import riemann
 
 omega = 2.0 * np.pi
@@ -78,6 +79,8 @@ def setup(nx=100, kernel_language='Python', solver_type='classic',
     claw.output_style = 1
     claw.num_output_times = 20
     claw.setplot = setplot
+
+    shutil.rmtree(outdir,ignore_errors=True)
 
     return claw
 
