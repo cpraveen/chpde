@@ -24,8 +24,8 @@ def burgers():
     state = pyclaw.State(domain,num_eqn)
 
     xc = domain.grid.x.centers
-    state.q[0,:] = (xc>-np.pi)*(xc<np.pi)*(2.*np.sin(3.*xc)+np.cos(2.*xc)+0.2)
-    state.q[0,:] = state.q[0,:]*(np.cos(xc)+1.)
+    state.q[0,:] = (xc>-np.pi)*(xc<np.pi)*(2*np.sin(3*xc)+np.cos(2*xc)+0.2)
+    state.q[0,:] = state.q[0,:]*(np.cos(xc)+1)
     state.problem_data['efix']=True
 
     claw = pyclaw.Controller()
@@ -65,13 +65,13 @@ def setplot(plotdata):
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes(name='Solution')
     plotaxes.xlimits = 'auto'
-    plotaxes.ylimits = [-3., 6.]
+    plotaxes.ylimits = 'auto'
     plotaxes.title = 'q[0]'
 
     # Set up for item on these axes:
     plotitem = plotaxes.new_plotitem(name='solution', plot_type='1d')
     plotitem.plot_var = 0
-    plotitem.plotstyle = '-o'
+    plotitem.plotstyle = '-'
     plotitem.color = 'b'
     plotitem.show = True       # show on plot?
     
