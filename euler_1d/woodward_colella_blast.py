@@ -89,7 +89,8 @@ def setup(order=2,flux='roe',use_petsc=False,outdir='./_output',
 
     state.problem_data['gamma'] = gamma
     if kernel_language =='Python':
-        state.problem_data['efix'] = False
+        state.problem_data['efix'] = False # not implemented in Python
+        state.problem_data['gamma1'] = gamma - 1.0
 
     x = state.grid.x.centers
 
