@@ -13,14 +13,14 @@ c
       common /comic/ q0
 c
 c
-      do 150 i=1,mx
-	 xcell = xlower + (i-0.5d0)*dx
-	 if (xcell .lt. 0.d0) then
-	     q(1,i) = q0
-	   else
-	     q(1,i) = q0
-	   endif
-  150    continue
+      do i=1,mx
+         xcell = xlower + (i-0.5d0)*dx
+         if (xcell .lt. 0.d0) then
+            q(1,i) = q0
+         else
+            q(1,i) = q0
+         endif
+      enddo
 c
       return
       end

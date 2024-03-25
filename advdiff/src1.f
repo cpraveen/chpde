@@ -31,7 +31,7 @@ c     # set coefficients in tridiagonal matrix and RHS:
         d(i) = 1.d0 + 2.d0*dtdx2
         du(i) = -dtdx2
         b(i,1) = q(1,i) + dtdx2 * (q(1,i-1) - 2.d0*q(1,i) + q(1,i+1))
-        enddo
+      enddo
 c
 c     # no-flux boundary conditions for diffusion step:
 c     # Adjust matrix entries to use q(1,0)=q(1,1) and q(1,mx+1)=q(1,mx)
@@ -59,7 +59,7 @@ c     # solve the tridiagonal system:
 
       do i=1,mx
          q(1,i) = b(i,1)
-	 enddo
+      enddo
 c
       return
       end
