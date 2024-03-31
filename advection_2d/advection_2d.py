@@ -15,18 +15,26 @@ Here q is a conserved quantity, and (u,v) is the velocity vector.
 import numpy as np
 from clawpack import riemann
 
-
-def qinit(state):
-    """Set initial condition for q.
-       Sample scalar equation with data that is piecewise constant with
-       q = 1.0  if  0.1 < x < 0.6   and   0.1 < y < 0.6
-           0.1  otherwise
-    """
+def qinit(ic, state):
     X, Y = state.grid.p_centers
-    state.q[0,:,:] = 0.9*(0.1<X)*(X<0.6)*(0.1<Y)*(Y<0.6) + 0.1
-                
 
-def setup(use_petsc=False,outdir='./_output',solver_type='classic'):
+    if ic == 1:
+        #   q = 1.0  if  0.2 < x < 0.6   and   0.2 < y < 0.6
+        #       0.1  otherwise
+        state.q[0,:,:] = 0.9*(0.2<X)*(X<0.6)*(0.2<Y)*(Y<0.6) + 0.1
+    elif ic == 2:
+        #   q = 0.5 + 0.5 * sin(2*pi*x) * sin(2*pi*y)
+        state.q[0,:,:] = 0.5 + 0.5 * np.sin(2*np.pi*X) * np.sin(2*np.pi*Y)
+    elif ic == 3:
+        #   q = exp(-100*((x-0.5)**2 + (y-0.5)**2))
+        X1, Y1 = X-0.5, Y-0.5
+        state.q[0,:,:] = np.exp(-100 * (X1**2 + Y1**2))
+    else:
+        print("Unknown value of ic"); exit()
+
+                
+def setup(use_petsc=False,outdir='./_output',solver_type='classic',order=2,
+          split=0,twaves=2,ic=1):
 
     if use_petsc:
         import clawpack.petclaw as pyclaw
@@ -35,8 +43,10 @@ def setup(use_petsc=False,outdir='./_output',solver_type='classic'):
 
     if solver_type == 'classic':
         solver = pyclaw.ClawSolver2D(riemann.advection_2D)
-        solver.dimensional_split = 1
+        solver.dimensional_split = split
+        solver.order = order
         solver.limiters = pyclaw.limiters.tvd.vanleer
+        solver.transverse_waves = twaves
     elif solver_type == 'sharpclaw':
         solver = pyclaw.SharpClawSolver2D(riemann.advection_2D)
 
@@ -60,7 +70,7 @@ def setup(use_petsc=False,outdir='./_output',solver_type='classic'):
     state.problem_data['u'] = 0.5 # Advection velocity
     state.problem_data['v'] = 1.0
 
-    qinit(state)
+    qinit(ic, state)
 
     claw = pyclaw.Controller()
     claw.tfinal = 2.0
