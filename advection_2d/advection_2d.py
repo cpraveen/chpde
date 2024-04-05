@@ -18,14 +18,14 @@ from clawpack import riemann
 def qinit(ic, state):
     X, Y = state.grid.p_centers
 
-    if ic == 1:
+    if ic == 3:
         #   q = 1.0  if  0.2 < x < 0.6   and   0.2 < y < 0.6
         #       0.1  otherwise
         state.q[0,:,:] = 0.9*(0.2<X)*(X<0.6)*(0.2<Y)*(Y<0.6) + 0.1
     elif ic == 2:
         #   q = 0.5 + 0.5 * sin(2*pi*x) * sin(2*pi*y)
         state.q[0,:,:] = 0.5 + 0.5 * np.sin(2*np.pi*X) * np.sin(2*np.pi*Y)
-    elif ic == 3:
+    elif ic == 1:
         #   q = exp(-100*((x-0.5)**2 + (y-0.5)**2))
         X1, Y1 = X-0.5, Y-0.5
         state.q[0,:,:] = np.exp(-100 * (X1**2 + Y1**2))
@@ -34,7 +34,7 @@ def qinit(ic, state):
 
                 
 def setup(use_petsc=False,outdir='./_output',solver_type='classic',order=2,
-          split=0,twaves=2,ic=1):
+          ncell=50,cfl=0.9,split=0,twaves=2,ic=1):
 
     if use_petsc:
         import clawpack.petclaw as pyclaw
@@ -55,11 +55,11 @@ def setup(use_petsc=False,outdir='./_output',solver_type='classic',order=2,
     solver.bc_lower[1] = pyclaw.BC.periodic
     solver.bc_upper[1] = pyclaw.BC.periodic
 
-    solver.cfl_max = 1.0
-    solver.cfl_desired = 0.9
+    solver.cfl_max = cfl + 0.1
+    solver.cfl_desired = cfl
 
     # Domain:
-    mx = 50; my = 50
+    mx, my = ncell, ncell
     x = pyclaw.Dimension(0.0,1.0,mx,name='x')
     y = pyclaw.Dimension(0.0,1.0,my,name='y')
     domain = pyclaw.Domain([x,y])
@@ -78,7 +78,7 @@ def setup(use_petsc=False,outdir='./_output',solver_type='classic',order=2,
     claw.solver = solver
     claw.outdir = outdir
     claw.setplot = setplot
-    claw.keep_copy = True
+    claw.keep_copy = False
 
     return claw
 
