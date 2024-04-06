@@ -45,10 +45,8 @@ print('Dir   = ', dir)
 
 # Read first frame and make grid
 f = read(0, dir, args.petsc)
-x  = f.state.grid.x.centers
-y  = f.state.grid.y.centers
-nx, ny = len(x), len(y)
-x, y = np.meshgrid(x, y, indexing="ij")
+x, y  = f.state.grid.p_centers
+nx, ny = f.state.grid.num_cells
 
 # Contour levels to draw
 levels = np.arange(0.05, 1.0, 0.1)
@@ -71,7 +69,7 @@ for frame in range(1000):
 
     # 2d plot data
     q  = f.state.q[0,:,:]
-    #------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------
     print('Frame, t = ', frame, t)
     t = "{:.3f}".format(t)
 

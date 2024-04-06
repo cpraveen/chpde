@@ -51,7 +51,6 @@ for i in range(nx+1):
 # Plot radial lines
 for j in range(ny+1):
     plt.plot(x[:,j],y[:,j],'k-')
-plt.title('Contours of q \n')
 plt.xlabel('x'); plt.ylabel('y')
 plt.axis('equal')
 plt.show()
