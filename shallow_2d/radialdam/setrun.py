@@ -38,9 +38,9 @@ def setrun(claw_pkg='classic'):
     #------------------------------------------------------------------
 
     probdata = rundata.new_UserData(name='probdata',fname='setprob.data')
-    probdata.add_param('grav',  1.,  'gravitational constant')
-    probdata.add_param('r0',  0.5,  'location of dam')
-    probdata.add_param('hin', 2.0, 'h inside dam')
+    probdata.add_param('grav', 1.0,  'gravitational constant')
+    probdata.add_param('r0',   0.5,  'location of dam')
+    probdata.add_param('hin',  2.0,  'h inside dam')
     probdata.add_param('hout', 1.0,  'h outside dam')
     
     #------------------------------------------------------------------
@@ -60,13 +60,13 @@ def setrun(claw_pkg='classic'):
     
     # Lower and upper edge of computational domain:
     clawdata.lower[0] = -2.5          # xlower
-    clawdata.upper[0] = 2.5          # xupper
+    clawdata.upper[0] =  2.5          # xupper
     clawdata.lower[1] = -2.5          # ylower
-    clawdata.upper[1] = 2.5          # yupper
+    clawdata.upper[1] =  2.5          # yupper
     
     # Number of grid cells:
-    clawdata.num_cells[0] = 100      # mx
-    clawdata.num_cells[1] = 100      # my
+    clawdata.num_cells[0] = 125      # mx
+    clawdata.num_cells[1] = 125      # my
     
 
     # ---------------
