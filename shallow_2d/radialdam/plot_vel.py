@@ -68,8 +68,8 @@ for frame in range(1000):
     print('Frame, t = ', frame, t)
     t = "{:.3f}".format(t)
 
-    cont = ax.contourf(x,y,h,cmap='viridis',levels=20)
-    vel = ax.quiver(x, y, u, v, scale=5)
+    cont = ax.contourf(x,y,h,cmap='jet',levels=20)
+    vel = ax.quiver(x, y, u, v, pivot='mid', color='white', scale=5)
     ax.set_xlim(0,2.5)
     ax.set_ylim(0,2.5)
     ax.set_aspect('equal')
