@@ -33,9 +33,10 @@ def setup(kernel_language='Fortran', use_petsc=False, outdir='./_output',
             solver = pyclaw.ClawSolver2D(riemann.acoustics_2D_ptwise)
         else:
             solver = pyclaw.ClawSolver2D(riemann.acoustics_2D)
-        solver.dimensional_split=True
-        solver.cfl_max = 0.5
-        solver.cfl_desired = 0.45
+        solver.dimensional_split = False
+        solver.transverse_waves = 2
+        solver.cfl_max = 1.0
+        solver.cfl_desired = 0.9
         solver.limiters = pyclaw.limiters.tvd.MC
     elif solver_type=='sharpclaw':
         solver=pyclaw.SharpClawSolver2D(riemann.acoustics_2D)
