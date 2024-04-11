@@ -12,9 +12,8 @@ Simple example solving the Euler equations of compressible fluid dynamics:
     (\rho v)_t + (\rho uv)_x + (\rho v^2 + p)_y & = 0 \\
     E_t + (u (E + p) )_x + (v (E + p))_y & = 0.
 
-Here :math:`\rho` is the density, (u,v) is the velocity, and E is the total energy.
-The initial condition is one of the 2D Riemann problems from the paper of
-Liska and Wendroff.
+Here :math:`\rho` is the density, (u,v) is the velocity, and E is the total energy.  The initial condition is one of the 2D Riemann problems from the paper of Liska and Wendroff, Case 3 in Table 4.3 in
+    https://doi.org/10.1137/S1064827502402120
 
 """
 from clawpack import riemann

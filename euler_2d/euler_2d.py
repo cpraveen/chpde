@@ -15,7 +15,8 @@ Solve the Euler equations of compressible fluid dynamics:
 
 Here :math:`\rho` is the density, (u,v) is the velocity, and E is the total energy.
 The initial condition is one of the 2D Riemann problems from the paper of
-Liska and Wendroff.
+Liska and Wendroff, Case 6 in Table 4.3, see
+    https://doi.org/10.1137/S1064827502402120
 
 This example shows how to use VisClaw's Iplot class for simple interactive plotting.
 """
@@ -58,11 +59,13 @@ solution.problem_data['gamma']  = gamma
 # Set initial data
 xx,yy = domain.grid.p_centers
 l = xx<0.5; r = xx>=0.5; b = yy<0.5; t = yy>=0.5
+u = 0.75*t - 0.75*b
+v = 0.5*l  - 0.5*r
 solution.q[density,...] = 2.0*l*t + 1.0*l*b + 1.0*r*t + 3.0*r*b
-solution.q[x_momentum,...] = 0.75*t - 0.75*b
-solution.q[y_momentum,...] = 0.5*l  - 0.5*r
-# TODO: CHECK ENERGY, SEEMS WRONG
-solution.q[energy,...] = 0.5*solution.q[density,...]*(solution.q[x_momentum,...]**2+solution.q[y_momentum,...]**2) + 1.0/(gamma-1.0)
+solution.q[x_momentum,...] = solution.q[density,...] * u
+solution.q[y_momentum,...] = solution.q[density,...] * v
+solution.q[energy,...] = 0.5*solution.q[density,...]*(u**2 + v**2) \
+                         + 1.0/(gamma-1.0)
 
 claw = pyclaw.Controller()
 claw.tfinal = 0.3
