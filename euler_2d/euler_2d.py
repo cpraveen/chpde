@@ -21,19 +21,25 @@ This example shows how to use VisClaw's Iplot class for simple interactive plott
 """
 from clawpack import pyclaw
 from clawpack import riemann
-from clawpack.riemann.euler_4wave_2D_constants import density, x_momentum, y_momentum, \
-        energy, num_eqn
+from clawpack.riemann.euler_4wave_2D_constants import density, x_momentum, \
+        y_momentum, energy, num_eqn
 
 def load_frame(frame_number):
     from clawpack.pyclaw import Solution
 
-    return Solution(frame_number)
+    try:
+        return Solution(frame_number)
+    except:
+        print("Reached end of frames")
+        exit()
 
 def plot_frame(frame):
     import matplotlib.pyplot as plt
     q = frame.q
     x, y = frame.state.grid.c_centers
-    plt.pcolormesh(x, y, q[density,...])
+    plt.pcolormesh(x, y, q[density,...], cmap='viridis')
+    plt.title('Density, t=' + str(frame.t))
+    plt.axis('equal')
 
 def plot_results():
     from clawpack.visclaw import iplot
@@ -43,7 +49,8 @@ def plot_results():
 solver = pyclaw.ClawSolver2D(riemann.euler_4wave_2D)
 solver.all_bcs = pyclaw.BC.extrap
 
-domain = pyclaw.Domain([0.0,0.0],[1.0,1.0],[200,200])
+mx, my = 200, 200
+domain = pyclaw.Domain([0.0,0.0],[1.0,1.0],[mx,my])
 solution = pyclaw.Solution(num_eqn,domain)
 gamma = 1.4
 solution.problem_data['gamma']  = gamma
@@ -64,4 +71,4 @@ claw.solver = solver
 
 status = claw.run()
 
-#plot_results()
+plot_results()

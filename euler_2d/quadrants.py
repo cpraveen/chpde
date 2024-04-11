@@ -18,8 +18,8 @@ Liska and Wendroff.
 
 """
 from clawpack import riemann
-from clawpack.riemann.euler_4wave_2D_constants import density, x_momentum, y_momentum, \
-        energy, num_eqn
+from clawpack.riemann.euler_4wave_2D_constants import density, x_momentum, \
+        y_momentum, energy, num_eqn
 from clawpack.visclaw import colormaps
 
 def setplot(plotdata):
@@ -86,7 +86,8 @@ def setup(use_petsc=False,riemann_solver='roe'):
         solver.cfl_max = 0.5
     solver.all_bcs = pyclaw.BC.extrap
 
-    domain = pyclaw.Domain([0.,0.],[1.,1.],[100,100])
+    mx, my = 100, 100
+    domain = pyclaw.Domain([0.,0.],[1.,1.],[mx,my])
     solution = pyclaw.Solution(num_eqn,domain)
     gamma = 1.4
     solution.problem_data['gamma']  = gamma
@@ -97,19 +98,20 @@ def setup(use_petsc=False,riemann_solver='roe'):
     r = xx >= 0.8
     b = yy < 0.8
     t = yy >= 0.8
-    solution.q[density,...] = 1.5 * r * t + 0.532258064516129 * l * t          \
-                                          + 0.137992831541219 * l * b          \
+    solution.q[density,...] = 1.5 * r * t + 0.532258064516129 * l * t \
+                                          + 0.137992831541219 * l * b \
                                           + 0.532258064516129 * r * b
-    u = 0.0 * r * t + 1.206045378311055 * l * t                                \
-                    + 1.206045378311055 * l * b                                \
+    u = 0.0 * r * t + 1.206045378311055 * l * t \
+                    + 1.206045378311055 * l * b \
                     + 0.0 * r * b
-    v = 0.0 * r * t + 0.0 * l * t                                              \
-                    + 1.206045378311055 * l * b                                \
+    v = 0.0 * r * t + 0.0 * l * t               \
+                    + 1.206045378311055 * l * b \
                     + 1.206045378311055 * r * b
     p = 1.5 * r * t + 0.3 * l * t + 0.029032258064516 * l * b + 0.3 * r * b
     solution.q[x_momentum,...] = solution.q[density, ...] * u
     solution.q[y_momentum,...] = solution.q[density, ...] * v
-    solution.q[energy,...] = 0.5 * solution.q[density,...]*(u**2 + v**2) + p / (gamma - 1.0)
+    solution.q[energy,...] = 0.5 * solution.q[density,...]*(u**2 + v**2) \
+                             + p / (gamma - 1.0)
 
     claw = pyclaw.Controller()
     claw.tfinal = 0.8

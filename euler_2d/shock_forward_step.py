@@ -45,8 +45,9 @@ def incoming_shock(state,dim,t,qbc,auxbc,num_ghost):
         qbc[3,i,...] = p/(gamma-1.0) + 0.5 * rho * (u**2 + v**2)
 
 
-def setup(use_petsc=False,solver_type='classic', outdir='_output', kernel_language='Fortran',
-          disable_output=False, mx=320, my=80, tfinal=2.0, num_output_times = 10):
+def setup(use_petsc=False,solver_type='classic', outdir='_output', 
+          kernel_language='Fortran', disable_output=False, mx=320, my=80,
+          tfinal=2.5, num_output_times = 25):
 
     if use_petsc:
         import clawpack.petclaw as pyclaw
@@ -130,7 +131,7 @@ def setplot(plotdata):
     plotaxes.afteraxes = fill_step
     plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
     plotitem.plot_var = 0
-    plotitem.pcolor_cmin = 1
+    plotitem.pcolor_cmin = 1.0
     plotitem.pcolor_cmax = 7.0
     plotitem.add_colorbar = True
     
