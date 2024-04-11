@@ -21,8 +21,9 @@ from clawpack.riemann.euler_with_efix_1D_constants import density, momentum, ene
 
 gamma = 1.4 # Ratio of specific heats
 
-def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output', 
-          solver_type='classic',kernel_language='Python',disable_output=False):
+def setup(mx=800,order=2,ic='sod',flux='hllc',use_petsc=False,
+          outdir='./_output',solver_type='classic',kernel_language='Python',
+          disable_output=False):
 
     if use_petsc:
         import clawpack.petclaw as pyclaw
@@ -92,11 +93,16 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
         rho_l, rho_r = 5.6698, 1.0
         u_l, u_r = -1.4701, -10.5
         p_l, p_r = 100.0, 1.0
+    elif ic == 'noh': # wall heating: https://doi.org/10.1137/S1064827502402120
+        xmin, xmax, tfinal = -0.5, 0.5, 1.0
+        rho_l, rho_r = 1.0, 1.0
+        u_l, u_r = 1.0, -1.0
+        p_l, p_r = 1.0e-6, 1.0e-6
+        gamma = 5.0/3.0
     else:
-        print("ic = sod, msod, contact, startup, sshock")
+        print("ic = sod, msod, contact, startup, sshock, noh")
         exit(1)
 
-    mx = 800
     x = pyclaw.Dimension(xmin,xmax,mx,name='x')
     domain = pyclaw.Domain([x])
     state = pyclaw.State(domain,num_eqn)
@@ -112,7 +118,8 @@ def setup(order=2,ic='sod',flux='hllc',use_petsc=False, outdir='./_output',
 
     state.q[density ,:] = (x<0.0)*rho_l + (x>=0.0)*rho_r
     state.q[momentum,:] = state.q[density,:] * velocity
-    state.q[energy  ,:] = pressure/(gamma - 1.0) + 0.5 * state.q[density,:] * velocity**2
+    state.q[energy  ,:] = pressure/(gamma - 1.0) \
+                          + 0.5 * state.q[density,:] * velocity**2
 
     claw = pyclaw.Controller()
     claw.tfinal = tfinal
