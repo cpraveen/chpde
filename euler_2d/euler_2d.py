@@ -38,7 +38,9 @@ def plot_frame(frame):
     import matplotlib.pyplot as plt
     q = frame.q
     x, y = frame.state.grid.c_centers
-    plt.pcolormesh(x, y, q[density,...], cmap='viridis')
+    plt.cla()
+    #plt.pcolormesh(x, y, q[density,...], cmap='viridis')
+    plt.contour(x, y, q[density,...], levels=20)
     plt.title('Density, t=' + str(frame.t))
     plt.axis('equal')
 

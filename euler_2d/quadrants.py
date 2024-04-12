@@ -42,12 +42,11 @@ def setplot(plotdata):
     plotaxes.title = 'Density'
 
     # Set up for item on these axes:
-    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
     plotitem.plot_var = density
-    plotitem.pcolor_cmap = colormaps.yellow_red_blue
-    plotitem.pcolor_cmin = 0.0
-    plotitem.pcolor_cmax = 2.0
-    plotitem.add_colorbar = True
+    plotitem.contour_nlevels = 20
+    plotitem.contour_min = 0.0
+    plotitem.contour_max = 2.0
 
     # Figure for density - Schlieren
     plotfigure = plotdata.new_plotfigure(name='Schlieren', figno=1)
@@ -56,7 +55,7 @@ def setplot(plotdata):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.xlimits = 'auto'
     plotaxes.ylimits = 'auto'
-    plotaxes.title = 'Density'
+    plotaxes.title = 'Schlieren'
     plotaxes.scaled = True      # so aspect ratio is 1
 
     # Set up for item on these axes:
