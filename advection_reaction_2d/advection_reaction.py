@@ -65,7 +65,7 @@ def set_velocities(solver,state):
 
 def setup():
     from clawpack import pyclaw
-    from clawpack.pyclaw.examples.advection_reaction_2d import advection_2d
+    import advection_2d
 
     solver = pyclaw.ClawSolver2D(advection_2d)
     # Use dimensional splitting since no transverse solver is defined
@@ -104,7 +104,8 @@ def setup():
     claw.tfinal = t_period
     claw.solution = pyclaw.Solution(state, domain)
     claw.solver = solver
-    claw.keep_copy = True
+    claw.num_output_times = 40
+    claw.keep_copy = False
     claw.setplot = setplot
 
     return claw
