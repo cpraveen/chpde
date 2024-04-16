@@ -22,10 +22,10 @@ from clawpack.riemann.shallow_roe_with_efix_2D_constants import depth, x_momentu
 import numpy as np
 
 amplitude = 0.1  # Height of incoming wave
-t_bdy = 5.       # Stop sending in waves at this time
+t_bdy = 5.0      # Stop sending in waves at this time
 
 def bathymetry(x,y):
-    r2 = (x-1.)**2 + (y-0.5)**2
+    r2 = (x-1.0)**2 + (y-0.5)**2
     return 0.8*np.exp(-10*r2)
 
 def wave_maker_bc(state,dim,t,qbc,auxbc,num_ghost):
@@ -36,7 +36,7 @@ def wave_maker_bc(state,dim,t,qbc,auxbc,num_ghost):
         if t <= t_bdy:
             vwall = amplitude*(np.sin(t*np.pi/1.5))
         else:
-            vwall=0.
+            vwall=0.0
         for ibc in range(num_ghost-1):
             qbc[1,num_ghost-ibc-1,:] = 2*vwall - qbc[1,num_ghost+ibc,:]
 
@@ -60,27 +60,27 @@ def setup(kernel_language='Fortran', solver_type='classic', use_petsc=False,
 
     my = 20
     mx = 4*my
-    x = pyclaw.Dimension(0.,4.,mx,name='x')
-    y = pyclaw.Dimension(0,1, my,name='y')
+    x = pyclaw.Dimension(0.0,4.0,mx,name='x')
+    y = pyclaw.Dimension(0.0,1.0, my,name='y')
     domain = pyclaw.Domain([x,y])
     state = pyclaw.State(domain,num_eqn,num_aux=1)
 
     X, Y = state.p_centers
     state.aux[0,:,:] = bathymetry(X,Y)
 
-    state.q[depth,:,:] = 1. - state.aux[0,:,:]
-    state.q[x_momentum,:,:] = 0.
-    state.q[y_momentum,:,:] = 0.
+    state.q[depth,:,:] = 1.0 - state.aux[0,:,:]
+    state.q[x_momentum,:,:] = 0.0
+    state.q[y_momentum,:,:] = 0.0
 
     state.problem_data['grav'] = 1.0
     state.problem_data['dry_tolerance'] = 1.e-3
-    state.problem_data['sea_level'] = 0.
+    state.problem_data['sea_level'] = 0.0
 
     claw = pyclaw.Controller()
-    claw.tfinal = 10
+    claw.tfinal = 15
     claw.solution = pyclaw.Solution(state,domain)
     claw.solver = solver
-    claw.num_output_times = 40
+    claw.num_output_times = 60
     claw.setplot = setplot
     claw.keep_copy = True
 
