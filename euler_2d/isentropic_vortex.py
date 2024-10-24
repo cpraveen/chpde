@@ -25,8 +25,8 @@ def setplot(plotdata):
     plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
     plotitem.plot_var = density
     plotitem.contour_nlevels = 20
-    #plotitem.contour_min = 0.0
-    #plotitem.contour_max = 2.0
+    plotitem.contour_min = 0.5
+    plotitem.contour_max = 1.0
 
     # Figure for density - Schlieren
     plotfigure = plotdata.new_plotfigure(name='Schlieren', figno=1)
@@ -65,8 +65,8 @@ def setup(use_petsc=False,riemann_solver='roe'):
     solver.limiters = pyclaw.limiters.tvd.MC
     solver.all_bcs = pyclaw.BC.periodic
 
-    mx, my = 100, 100
-    domain = pyclaw.Domain([-5.0,-5.0],[5.0,5.0],[mx,my])
+    L, mx, my = 5.0, 100, 100
+    domain = pyclaw.Domain([-L,-L],[L,L],[mx,my])
     solution = pyclaw.Solution(num_eqn,domain)
     gamma = 1.4
     solution.problem_data['gamma']  = gamma
@@ -75,6 +75,7 @@ def setup(use_petsc=False,riemann_solver='roe'):
     mach, alpha, beta = 0.5, 45.0, 5.0
     vx0 = mach * np.cos(alpha*np.pi/180)
     vy0 = mach * np.sin(alpha*np.pi/180)
+    period = np.sqrt(2.0)*(2.0*L) / mach
 
     x, y = domain.grid.p_centers
     r2 = x**2 + y**2
@@ -90,7 +91,7 @@ def setup(use_petsc=False,riemann_solver='roe'):
     solution.q[energy,...] = 0.5 * rho * (u**2 + v**2) + p / (gamma - 1.0)
 
     claw = pyclaw.Controller()
-    claw.tfinal = 20.0
+    claw.tfinal = period
     claw.num_output_times = 40
     claw.solution = solution
     claw.solver = solver
