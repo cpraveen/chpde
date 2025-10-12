@@ -31,3 +31,21 @@ https://github.com/clawpack/riemann_book
 1. Shallow water
    1. [Tsunami from ocean onto shelf and beach](https://github.com/clawpack/geoclaw/tree/master/examples/1d_classic/ocean_shelf_beach)
    1. [Sloshing liquid in a bowl](https://github.com/clawpack/geoclaw/tree/master/examples/tsunami/bowl-slosh)
+
+## Visualization
+
+After generating the solution files, e.g., for classic solver using
+
+```shell
+make .output
+```
+
+The solution files should now be in `_output` directory. Start `ipython` and run the following commands
+
+```shell
+import clawpack.visclaw.Iplotclaw as Iplotclaw
+ip = Iplotclaw()
+ip.plotloop()
+```
+
+Press enter to get the first plot and for later frames.
