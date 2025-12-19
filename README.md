@@ -49,3 +49,9 @@ ip.plotloop()
 ```
 
 Press enter to get the first plot and for later frames.
+
+---
+
+* `Origin`: https://codeberg.org/cpraveen/chpde
+* `Mirror`: https://git.sr.ht/~cpraveen/chpde
+* `Mirror`: https://github.com/cpraveen/chpde
