@@ -19,9 +19,9 @@ subroutine setprob
 
 
     ! advection velocity:
-    read(7,*) u
+    read(iunit,*) u
 
     ! beta for initial conditions:
-    read(7,*) beta
+    read(iunit,*) beta
 
 end subroutine setprob
