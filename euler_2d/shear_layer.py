@@ -16,6 +16,7 @@ def setplot(plotdata):
 
     # Figure for density - pcolor
     plotfigure = plotdata.new_plotfigure(name='Density', figno=0)
+    #plotfigure.kwargs = {'figsize':[10,20]}
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
@@ -25,11 +26,13 @@ def setplot(plotdata):
     plotaxes.title = 'Density'
 
     # Set up for item on these axes:
-    plotitem = plotaxes.new_plotitem(plot_type='2d_contour')
+    plotitem = plotaxes.new_plotitem(plot_type='2d_pcolor')
+    plotitem.pcolor_cmin = 1.3985
+    plotitem.pcolor_cmax = 1.4015
+    plotitem.pcolor_cmap = 'plasma' # colormaps.yellow_red_blue
+    plotitem.add_colorbar = True
+    plotitem.colorbar_shrink = 0.5
     plotitem.plot_var = density
-    plotitem.contour_nlevels = 20
-    #plotitem.contour_min = 0.5
-    #plotitem.contour_max = 1.0
 
     return plotdata
 
@@ -56,10 +59,10 @@ def setup(use_petsc=False,riemann_solver='roe'):
         solver.transverse_waves = 0
         solver.cfl_desired = 0.4
         solver.cfl_max = 0.5
-    solver.limiters = pyclaw.limiters.tvd.MC
+    solver.limiters = pyclaw.limiters.tvd.vanleer
     solver.all_bcs = pyclaw.BC.periodic
 
-    mx, my = 2*128, 2*64
+    mx, my = 128, 64
     domain = pyclaw.Domain([0.0,-0.5],[2.0,0.5],[mx,my])
     solution = pyclaw.Solution(num_eqn,domain)
     gamma = 1.4
@@ -67,7 +70,7 @@ def setup(use_petsc=False,riemann_solver='roe'):
 
     # Set initial data
     # Initial level of mach number
-    M0 = 0.1
+    M0 = 0.01
 
     x, y = domain.grid.p_centers
     rho  = gamma + 1.0e-3 * (1.0 - 2.0 * eta(y))
