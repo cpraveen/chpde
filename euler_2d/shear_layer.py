@@ -59,7 +59,10 @@ def setup(use_petsc=False,riemann_solver='roe'):
         solver.transverse_waves = 0
         solver.cfl_desired = 0.4
         solver.cfl_max = 0.5
-    solver.limiters = pyclaw.limiters.tvd.vanleer
+    solver.limiters = [pyclaw.limiters.tvd.vanleer,
+                       pyclaw.limiters.tvd.superbee,
+                       pyclaw.limiters.tvd.superbee,
+                       pyclaw.limiters.tvd.vanleer]
     solver.all_bcs = pyclaw.BC.periodic
 
     mx, my = 128, 64
