@@ -32,10 +32,18 @@ def setrun(claw_pkg='classic'):
     num_dim = 1
     rundata = data.ClawRunData(claw_pkg, num_dim)
 
+    # 5.1 Test Case 1
     rhol,   rhor   = 1.0, 0.125
     vl,     vr     = 0.0, 0.0
     pl,     pr     = 1.0, 0.1
     gammal, gammar = 1.6, 1.2
+    tfinal         = 0.2
+
+    # 5.2 Test Case 2: Isolated material front
+    rhol,   rhor   = 1.0, 0.1
+    vl,     vr     = 1.0, 1.0
+    pl,     pr     = 1.0, 1.0
+    gammal, gammar = 1.6, 1.4
     tfinal         = 0.2
 
     #------------------------------------------------------------------

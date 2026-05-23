@@ -103,6 +103,7 @@ subroutine rp1(maxmx,meqn,mwaves,maux,mbc,mx,ql,qr,auxl,auxr,wave,s,amdq,apdq)
         wave(4,3,i) = 0.0d0
         s(3,i) = u(i)+a(i)
 
+        ! TODO: Something is missing in this wave
         wave(1,4,i) = 0.0d0
         wave(2,4,i) = 0.0d0
         wave(3,4,i) = 0.0d0
